@@ -285,7 +285,6 @@ CMD:car(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		COMMAND_RAN = true;
 		new CAR_NAME[128];
  		new STRING[128];
 		new Float:X, Float:Y, Float:Z;
@@ -305,7 +304,8 @@ CMD:car(PLAYER_ID, PARAMS[])
 	    VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
 	    PutPlayerInVehicle(PLAYER_ID,VEHICLE[PLAYER_ID],0);
 	 	format(STRING,sizeof(STRING),"Your %s has been spawned.",CAR_NAME);
-	 	return SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
+	 	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
+	 	COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -315,7 +315,6 @@ CMD:cc(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		COMMAND_RAN = true;
  		new COLOR_ID, COLOR_ID2, VEHICLE_ID, STR[128];
 	    VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not in a vehicle!");
@@ -327,8 +326,9 @@ CMD:cc(PLAYER_ID, PARAMS[])
 	    {
 	        ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2);
 	        format(STR, sizeof(STR), "Car color changed.", COLOR_ID, COLOR_ID2);
-	        return SendClientMessage(PLAYER_ID, 0xffffffff, STR);
+	        SendClientMessage(PLAYER_ID, 0xffffffff, STR);
 	    }
+	    COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -338,7 +338,6 @@ CMD:flip(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 		if(IsPlayerInAnyVehicle(PLAYER_ID))
 		{
 			new CURRENT_VEHICLE;
@@ -350,8 +349,9 @@ CMD:flip(PLAYER_ID, PARAMS[])
 		}
 		else
 		{
-	 		return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not in a vehicle!");
+	 		SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not in a vehicle!");
 		}
+		COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -361,11 +361,11 @@ CMD:t(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 		new Float:T;
 		if(sscanf(PARAMS, "f", T)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
 		else if(T < 0 || T > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
-		else TIME[PLAYER_ID] = T; return SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
+		else TIME[PLAYER_ID] = T; SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
+		COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -375,11 +375,11 @@ CMD:w(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 		new Float:W;
 		if(sscanf(PARAMS, "f", W)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
 		else if(W < 0 || W > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Weather can not be above 255 or below 0!");
-		else WEATHER[PLAYER_ID] = W; return SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
+		else WEATHER[PLAYER_ID] = W; SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
+		COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -389,7 +389,6 @@ CMD:s(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 		if(IsPlayerInAnyVehicle(PLAYER_ID))
 		{
 		    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
@@ -402,7 +401,8 @@ CMD:s(PLAYER_ID, PARAMS[])
 		    GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 		}
 	 	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-	    return SendClientMessage(PLAYER_ID, 0xffffffff, "Saved teleport position.");
+	    SendClientMessage(PLAYER_ID, 0xffffffff, "Saved teleport position.");
+	    COMMAND_RAN = true;
 	}
 	return 1;
 }
@@ -412,7 +412,6 @@ CMD:r(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 	    if ( PosX[ PLAYER_ID ] != 0 && PosY[ PLAYER_ID ] != 0 && PosZ[ PLAYER_ID ] != 0 )
     	{
 			if(IsPlayerInAnyVehicle(PLAYER_ID))
@@ -427,7 +426,8 @@ CMD:r(PLAYER_ID, PARAMS[])
 		        SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 			}
 			SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-	        return SendClientMessage( PLAYER_ID, 0xffffffff, "Teleported to saved position." );
+	        SendClientMessage( PLAYER_ID, 0xffffffff, "Teleported to saved position." );
+	        COMMAND_RAN = true;
 	    }
 	}
 	return 1;
@@ -438,7 +438,6 @@ CMD:goto(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-	    COMMAND_RAN = true;
 		new Float:POS_X, Float:POS_Y, Float:POS_Z, ID;
 		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /goto <id>");
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Player is not online!");
@@ -455,7 +454,8 @@ CMD:goto(PLAYER_ID, PARAMS[])
    				GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
 			    SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
 			}
-		    return SendClientMessage(PLAYER_ID, 0xffffffff, "Teleported to player!");
+		    SendClientMessage(PLAYER_ID, 0xffffffff, "Teleported to player!");
+		    COMMAND_RAN = true;
 		}
  	}
 	return 1;
