@@ -19,6 +19,8 @@ main()
 	print("-----------------------------------\n");
 }
 
+new Text:WATERMARK;
+
 new WEATHER[MAX_PLAYERS], TIME[MAX_PLAYERS];
 new VEHICLE[MAX_PLAYERS];
 new VEHICLE_NAMES[212][] =
@@ -60,6 +62,7 @@ public OnPlayerDisconnect(playerid, reason)
  		format(string, sizeof(string), "Player %s(%d) has left the server", name, playerid);
 	    SendClientMessage(i, 0xffffffff, string);
 	}
+	TextDrawHideForPlayer(playerid, WATERMARK);
     return 1;
 }
 
@@ -75,6 +78,7 @@ public OnPlayerConnect(playerid)
 	}
 	WEATHER[playerid] = 18;
 	TIME[playerid] = 21;
+	TextDrawShowForPlayer(playerid, WATERMARK);
     return 1;
 }
 
@@ -90,6 +94,12 @@ public OnGameModeInit()
 {
 	SetGameModeText("dotexe drift script");
 	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
+	
+	WATERMARK = TextDrawCreate(5, 430, "--");
+	TextDrawFont(WATERMARK,3);
+ 	TextDrawLetterSize(WATERMARK,0.399999,1.600000);
+    TextDrawColor(WATERMARK,0xffffffff);
+    TextDrawSetString(WATERMARK, "dotexe drift script");
 	return 1;
 }
 
@@ -361,8 +371,8 @@ CMD:t(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		new Float:T;
-		if(sscanf(PARAMS, "f", T)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
+		new T;
+		if(sscanf(PARAMS, "d", T)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
 		else if(T < 0 || T > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
 		else TIME[PLAYER_ID] = T; SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
 		COMMAND_RAN = true;
@@ -375,8 +385,8 @@ CMD:w(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		new Float:W;
-		if(sscanf(PARAMS, "f", W)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
+		new W;
+		if(sscanf(PARAMS, "d", W)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
 		else if(W < 0 || W > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Weather can not be above 255 or below 0!");
 		else WEATHER[PLAYER_ID] = W; SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
 		COMMAND_RAN = true;
