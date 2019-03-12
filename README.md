@@ -1,6 +1,8 @@
 # samp-drift-script
 A SA-MP server gamemode designed for drifting
 
+"You're singlehandedly reviving the drifting community" -d4vst3r
+
 # Current features
 - Infinite nitrous
 - Car godmode
