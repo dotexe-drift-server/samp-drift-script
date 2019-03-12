@@ -286,7 +286,7 @@ public OnPlayerClickPlayer(playerid, clickedplayerid, source)
 
 RETURN_VEHICLE_ID(VEHICLE_NAME[])
 {
-    for(new x; x != 211; x++) if(strfind(VEHICLE_NAMES[x], VEHICLE_NAME, true) != -1) return x + 400;
+    for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
     return INVALID_VEHICLE_ID;
 }
 
