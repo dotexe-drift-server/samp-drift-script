@@ -15,7 +15,7 @@ A SA-MP server gamemode designed for drifting
 - /sf (San Fierro)
 - /sfap (San Fierro Airport)
 - /car car_name (Spawn a car)
-- /cc color_id (Change the color of your car)
+- /cc id1 id2 (Change the color of your car)
 - /flip (Flip your car onto its wheels)
 - /s (Save a custom teleport position)
 - /r (Load your saved teleport position)
