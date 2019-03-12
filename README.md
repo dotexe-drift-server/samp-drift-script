@@ -7,6 +7,7 @@ A SA-MP server gamemode designed for drifting
 - Infinite nitrous
 - Car godmode
 - Player godmode
+- Chat notifications when a player leaves or joins the server
 - /ls (Los Santos)
 - /lsap (Los Santos Airport)
 - /lv (Las Venturas)
