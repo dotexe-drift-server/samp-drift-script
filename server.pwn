@@ -51,12 +51,12 @@ new
 
 public OnPlayerDisconnect( playerid, reason )
 {
-    return ( 1 );
+    return 1;
 }
 
 public OnPlayerConnect( playerid )
 {
-    return ( 1 );
+    return 1;
 }
 
 
@@ -64,7 +64,7 @@ public OnPlayerSpawn( playerid )
 {
 	GetPlayerPos(playerid, PosX[playerid], PosY[playerid], PosZ[playerid]);
  	GetPlayerFacingAngle(playerid, Angle[playerid]);
-    return ( 1 );
+    return 1;
 }
 
 public OnGameModeInit()
@@ -259,58 +259,28 @@ RETURN_VEHICLE_ID(VEHICLE_NAME[])
     return INVALID_VEHICLE_ID;
 }
 
-CMD:t(PLAYER_ID, PARAMS[])
-{
-	new TIME;
-	if(sscanf(PARAMS, "d", TIME)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
-	else if(TIME < 0 || TIME > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
-	else
-	{
-		SetPlayerTime(PLAYER_ID, TIME);
-	}
-	return 1;
-}
-
-CMD:w(PLAYER_ID, PARAMS[])
-{
-	new WEATHER;
-	if(sscanf(PARAMS, "d", WEATHER)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
-	else if(WEATHER < 0 || WEATHER > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 255 or below 0!");
-	else
-	{
-		SetPlayerWeather(PLAYER_ID, WEATHER);
-	}
-	return 1;
-}
-
 CMD:car(PLAYER_ID, PARAMS[])
 {
-	new bool:COMMAND_RAN = false;
-	if(COMMAND_RAN == false)
+ 	new CAR_NAME[128];
+ 	new STRING[128];
+	new Float:X, Float:Y, Float:Z;
+	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
+	if(sscanf(PARAMS, "s", CAR_NAME))
 	{
-	    new CAR_NAME[128];
-		new STRING[128];
-		new Float:X, Float:Y, Float:Z;
-		GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
-		if(sscanf(PARAMS, "s", CAR_NAME))
-		{
-			return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /car <name>");
-		}
-		else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0)
-		{
-			return SendClientMessage(PLAYER_ID, 0xff0000ff, "Vehicle does not exist!");
-		}
-		if(VEHICLE[PLAYER_ID] != 0)
-		{
-	        DestroyVehicle(VEHICLE[PLAYER_ID]);
-		}
-	    VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
-	    PutPlayerInVehicle(PLAYER_ID,VEHICLE[PLAYER_ID],0);
-	    format(STRING,sizeof(STRING),"Your %s has been spawned.",CAR_NAME);
-	    SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
-	    COMMAND_RAN = true;
+		return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /car <name>");
 	}
-	return 1;
+	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0)
+	{
+		return SendClientMessage(PLAYER_ID, 0xff0000ff, "Vehicle does not exist!");
+	}
+	if(VEHICLE[PLAYER_ID] != 0)
+	{
+        DestroyVehicle(VEHICLE[PLAYER_ID]);
+	}
+    VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
+    PutPlayerInVehicle(PLAYER_ID,VEHICLE[PLAYER_ID],0);
+ 	format(STRING,sizeof(STRING),"Your %s has been spawned.",CAR_NAME);
+ 	return SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
 }
 
 CMD:cc(PLAYER_ID, PARAMS[])
@@ -326,32 +296,41 @@ CMD:cc(PLAYER_ID, PARAMS[])
     {
         ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2);
         format(STR, sizeof(STR),"Car color changed.",COLOR_ID, COLOR_ID2);
-        SendClientMessage(PLAYER_ID, 0xffffffff, STR);
+        return SendClientMessage(PLAYER_ID, 0xffffffff, STR);
     }
-    return 1;
 }
 
 CMD:flip(PLAYER_ID, PARAMS[])
 {
-	new bool:COMMAND_RAN = false;
-	if(COMMAND_RAN == false)
+	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
- 		if(IsPlayerInAnyVehicle(PLAYER_ID))
-		{
-			new CURRENT_VEHICLE;
-	   		new Float:ANGLE;
-	    	CURRENT_VEHICLE = GetPlayerVehicleID(PLAYER_ID);
-	    	GetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
-	    	SetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
-	    	SendClientMessage(PLAYER_ID, 0xffffffff, "Your vehicle has been flipped.");
-		}
-		else
-		{
- 			SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not in a vehicle!");
-		}
-	    COMMAND_RAN = true;
+		new CURRENT_VEHICLE;
+	   	new Float:ANGLE;
+	   	CURRENT_VEHICLE = GetPlayerVehicleID(PLAYER_ID);
+	   	GetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
+	  	SetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
+	   	return SendClientMessage(PLAYER_ID, 0xffffffff, "Your vehicle has been flipped.");
 	}
-	return 1;
+	else
+	{
+ 		return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not in a vehicle!");
+	}
+}
+
+CMD:t(PLAYER_ID, PARAMS[])
+{
+	new TIME;
+	if(sscanf(PARAMS, "d", TIME)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
+	else if(TIME < 0 || TIME > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
+	else SetPlayerTime(PLAYER_ID, TIME, 0); return SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
+}
+
+CMD:w(PLAYER_ID, PARAMS[])
+{
+	new WEATHER;
+	if(sscanf(PARAMS, "d", WEATHER)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
+	else if(WEATHER < 0 || WEATHER > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Weather can not be above 255 or below 0!");
+	else SetPlayerWeather(PLAYER_ID, WEATHER); return SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
 }
 
 CMD:s(PLAYER_ID, PARAMS[])
@@ -368,9 +347,7 @@ CMD:s(PLAYER_ID, PARAMS[])
 	    GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 	}
  	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-    SendClientMessage(PLAYER_ID, 0xffffffff, "Saved teleport position.");
-
-    return 1;
+    return SendClientMessage(PLAYER_ID, 0xffffffff, "Saved teleport position.");
 }
 
 CMD:r(PLAYER_ID, PARAMS[])
@@ -389,9 +366,8 @@ CMD:r(PLAYER_ID, PARAMS[])
 	        SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 		}
 		SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-        SendClientMessage( PLAYER_ID, 0xffffffff, "Teleported to saved position." );
+        return SendClientMessage( PLAYER_ID, 0xffffffff, "Teleported to saved position." );
     }
-    return 1;
 }
 
 CMD:ls(PLAYER_ID, PARAMS[])
@@ -406,8 +382,7 @@ CMD:ls(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Los Santos.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Los Santos.");
 }
 
 CMD:lsap(PLAYER_ID, PARAMS[])
@@ -422,8 +397,7 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
  		SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Los Santos Airport.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Los Santos Airport.");
 }
 
 CMD:sf(PLAYER_ID, PARAMS[])
@@ -438,8 +412,7 @@ CMD:sf(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to San Fierro.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to San Fierro.");
 }
 
 CMD:sfap(PLAYER_ID, PARAMS[])
@@ -454,8 +427,7 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to San Fierro Airport.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to San Fierro Airport.");
 }
 
 CMD:lv(PLAYER_ID, PARAMS[])
@@ -472,8 +444,7 @@ CMD:lv(PLAYER_ID, PARAMS[])
 		SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125);
 		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Las Venturas.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Las Venturas.");
 }
 
 CMD:lvap(PLAYER_ID, PARAMS[])
@@ -488,6 +459,5 @@ CMD:lvap(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
 	}
-	SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Las Venturas Airport.");
-	return 1;
+	return SendClientMessage(PLAYER_ID, 0xffffffff, "You've been teleported to Las Venturas Airport.");
 }
