@@ -19,8 +19,8 @@ main()
 	print("-----------------------------------\n");
 }
 
-new Float:WEATHER[MAX_PLAYERS], Float:TIME[MAX_PLAYERS];
-new Float:VEHICLE[MAX_PLAYERS];
+new WEATHER[MAX_PLAYERS], TIME[MAX_PLAYERS];
+new VEHICLE[MAX_PLAYERS];
 new VEHICLE_NAMES[212][] =
 {
         "Landstalker", "Bravura", "Buffalo", "Linerunner", "Pereniel", "Sentinel", "Dumper", "Firetruck", "Trashmaster", "Stretch", "Manana", "Infernus",
@@ -239,7 +239,7 @@ public OnPlayerUpdate(playerid)
 	{
 	    AddVehicleComponent(VEH, 1010);
 	}
- SetPlayerWeather(playerid, WEATHER[playerid]);
+ 	SetPlayerWeather(playerid, WEATHER[playerid]);
 	SetPlayerTime(playerid, TIME[playerid]);
 	return 1;
 }
