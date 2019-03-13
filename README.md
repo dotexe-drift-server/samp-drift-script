@@ -37,8 +37,8 @@ gamemode0 server 1
 
 Make sure to install YSI (it's needed for the registration script and other config file saving) and sscanf2
 
-Make sure to disable all of SA-MP's extra crap or else you may experience slowdown and time/lighting bugs
-You should only have these enabled:
+Make sure to disable all of SA-MP's extra crap or else you may experience slowdown and time/lighting bugs. You should only have these enabled:
+
 ```
 filterscripts gl_actions gl_mapicon
 plugins sscanf.dll
