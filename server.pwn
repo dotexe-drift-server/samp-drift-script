@@ -151,7 +151,7 @@ public OnPlayerDisconnect(playerid, reason)
 	    new name[MAX_PLAYER_NAME + 1];
 	    GetPlayerName(playerid, name, sizeof(name));
  		new string[128];
- 		format(string, sizeof(string), "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player " COLOR_LIGHTBLUE "%s(%d) has left the server", name, playerid);
+ 		format(string, sizeof(string), "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player %s(%d) has left the server", name, playerid);
 	    SendClientMessage(i, 0xffffffff, string);
 	}
 	TextDrawHideForPlayer(playerid, WATERMARK);
@@ -173,7 +173,7 @@ public OnPlayerConnect(playerid)
 	    new name[MAX_PLAYER_NAME + 1];
 	    GetPlayerName(playerid, name, sizeof(name));
      	new string[128];
-     	format(string, sizeof(string), COLOR_GREY "[SERVER]: " COLOR_WHITE "Player " COLOR_LIGHTBLUE "%s(%d) has joined the server", name, playerid);
+     	format(string, sizeof(string), COLOR_GREY "[SERVER]: " COLOR_WHITE "Player %s(%d) has joined the server", name, playerid);
 	    SendClientMessage(i, 0xffffffff, string);
 	}
 	TextDrawShowForPlayer(playerid, WATERMARK);
