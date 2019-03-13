@@ -1,7 +1,9 @@
 # samp-drift-script
 A SA-MP server gamemode designed for drifting
 
+# What do the users have to say?
 "You're singlehandedly reviving the drifting community" -d4vst3r
+
 "You're making me want to record SA-MP again" -7thor
 
 # Current features
@@ -27,11 +29,17 @@ A SA-MP server gamemode designed for drifting
 - /goto id (Go to a player)
 
 # How to install
-Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode (example: gamemode0 server 1)
+Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode
+  
+```
+gamemode0 server 1
+```
 
 Make sure to install YSI (it's needed for the registration script and other config file saving) and sscanf2
 
 Make sure to disable all of SA-MP's extra crap or else you may experience slowdown and time/lighting bugs
 You should only have these enabled:
+```
 filterscripts gl_actions gl_mapicon
 plugins sscanf.dll
+```
