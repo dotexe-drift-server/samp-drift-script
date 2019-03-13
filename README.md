@@ -14,8 +14,8 @@ Language: English
 ```
 
 # What do the users have to say?
-"You're singlehandedly reviving the drifting community" -d4vst3r
-"You're making me want to record SA-MP again" -7thor
+- "You're singlehandedly reviving the drifting community" -d4vst3r
+- "You're making me want to record SA-MP again" -7thor
 
 # Current features
 - Chat notifications when a player leaves or joins the server
