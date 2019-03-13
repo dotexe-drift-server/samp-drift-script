@@ -329,7 +329,7 @@ CMD:car(PLAYER_ID, PARAMS[])
 	new STRING[128];
 	new Float:X, Float:Y, Float:Z;
 	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
-	if(sscanf(PARAMS, "s", CAR_NAME))
+	if(sscanf(PARAMS, "s[128]", CAR_NAME))
 	{
 		return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /car <name>");
 	}
