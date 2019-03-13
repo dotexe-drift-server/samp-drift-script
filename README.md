@@ -5,17 +5,16 @@ A SA-MP server gamemode designed for drifting
 The script is running on my drift server.
 
 ```
-
-```
-
-# What do the users have to say?
-"You're singlehandedly reviving the drifting community" -d4vst3r
 HostName: [0.3.7] dotexe's drift server
 Address:  204.118.69.87:1337
 Players:  0 / 1000
 Ping:     4
 Mode:     dotexe drift script
 Language: English
+```
+
+# What do the users have to say?
+"You're singlehandedly reviving the drifting community" -d4vst3r
 "You're making me want to record SA-MP again" -7thor
 
 # Current features
