@@ -7,10 +7,7 @@ The script is running on my drift server.
 ```
 HostName: [0.3.7] dotexe's drift server
 Address:  204.118.69.87:1337
-Players:  x / 1000
-Ping:     x
 Mode:     dotexe drift script
-Language: English
 ```
 
 # What do the users have to say?
