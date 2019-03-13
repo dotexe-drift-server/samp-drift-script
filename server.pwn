@@ -99,49 +99,17 @@ new VEHICLE_NAMES[212][] =
         "Stair Trailer", "Boxville", "Farm Plow", "Utility Trailer"
 };
 
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+public OnGameModeInit()
 {
-    switch(dialogid)
-    {
-        case DIALOG_REGISTER:
-        {
-            if (!response) return Kick(playerid);
-            if(response)
-            {
-                if(!strlen(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_RED "You have entered an invalid password.\n" COLOR_WHITE "Type your password below to register a new account.", "Register", "Quit");
-                new INI:File = INI_Open(UserPath(playerid));
-                INI_SetTag(File,"data");
-                INI_WriteInt(File, "Password", udb_hash(inputtext));
-                GivePlayerMoney(playerid, 1337);
-                INI_WriteInt(File, "Cash", 1337);
-                INI_WriteInt(File, "Kills", 0);
-                INI_WriteInt(File, "Deaths", 0);
-                INI_WriteBool(File, "IsAdmin", false);
-                INI_Close(File);
-                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "You have successfully registered!", "Ok", "");
-            }
-        }
+	SetGameModeText("dotexe drift script");
+	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
 
-        case DIALOG_LOGIN:
-        {
-            if (!response) return Kick (playerid);
-            if(response)
-            {
-                if(udb_hash(inputtext) == PlayerInfo[playerid][pPass])
-                {
-                    INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
-                    GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
-                    ShowPlayerDialog(playerid, DIALOG_SUCCESS_2, DIALOG_STYLE_MSGBOX,""COLOR_WHITE"Success!",""COLOR_GREEN"You have successfully logged in!","Ok","");
-                }
-                else
-                {
-                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
-                }
-                return 1;
-            }
-        }
-    }
-    return 1;
+	WATERMARK = TextDrawCreate(5, 430, "--");
+	TextDrawFont(WATERMARK,3);
+ 	TextDrawLetterSize(WATERMARK,0.399999,1.600000);
+    TextDrawColor(WATERMARK,0xffffffff);
+    TextDrawSetString(WATERMARK, "dotexe drift script");
+	return 1;
 }
 
 public OnPlayerDisconnect(playerid, reason)
@@ -198,19 +166,6 @@ public OnPlayerSpawn(playerid)
     return 1;
 }
 
-public OnGameModeInit()
-{
-	SetGameModeText("dotexe drift script");
-	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
-
-	WATERMARK = TextDrawCreate(5, 430, "--");
-	TextDrawFont(WATERMARK,3);
- 	TextDrawLetterSize(WATERMARK,0.399999,1.600000);
-    TextDrawColor(WATERMARK,0xffffffff);
-    TextDrawSetString(WATERMARK, "dotexe drift script");
-	return 1;
-}
-
 public OnPlayerRequestClass(playerid, classid)
 {
 	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
@@ -240,6 +195,51 @@ public OnPlayerUpdate(playerid)
 	    AddVehicleComponent(VEH, 1010);
 	}
 	return 1;
+}
+
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    switch(dialogid)
+    {
+        case DIALOG_REGISTER:
+        {
+            if (!response) return Kick(playerid);
+            if(response)
+            {
+                if(!strlen(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_RED "You have entered an invalid password.\n" COLOR_WHITE "Type your password below to register a new account.", "Register", "Quit");
+                new INI:File = INI_Open(UserPath(playerid));
+                INI_SetTag(File,"data");
+                INI_WriteInt(File, "Password", udb_hash(inputtext));
+                GivePlayerMoney(playerid, 1337);
+                INI_WriteInt(File, "Cash", 1337);
+                INI_WriteInt(File, "Kills", 0);
+                INI_WriteInt(File, "Deaths", 0);
+                INI_WriteBool(File, "IsAdmin", false);
+                INI_Close(File);
+                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "You have successfully registered!", "Ok", "");
+            }
+        }
+
+        case DIALOG_LOGIN:
+        {
+            if (!response) return Kick (playerid);
+            if(response)
+            {
+                if(udb_hash(inputtext) == PlayerInfo[playerid][pPass])
+                {
+                    INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
+                    GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
+                    ShowPlayerDialog(playerid, DIALOG_SUCCESS_2, DIALOG_STYLE_MSGBOX,""COLOR_WHITE"Success!",""COLOR_GREEN"You have successfully logged in!","Ok","");
+                }
+                else
+                {
+                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
+                }
+                return 1;
+            }
+        }
+    }
+    return 1;
 }
 
 CMD:ban(PLAYER_ID, PARAMS[])
