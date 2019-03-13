@@ -5,10 +5,12 @@ A SA-MP server gamemode designed for drifting
 "You're making me want to record SA-MP again" -7thor
 
 # Current features
+- Chat notifications when a player leaves or joins the server
+- Registration and login, passwords saved as a hash in a .ini file (passwords are not saved as raw text)
+- Money, kills, and other things are saved to an .ini file just like the passwords
 - Infinite nitrous
 - Car godmode
 - Player godmode
-- Chat notifications when a player leaves or joins the server
 - /ls (Los Santos)
 - /lsap (Los Santos Airport)
 - /lv (Las Venturas)
@@ -26,3 +28,10 @@ A SA-MP server gamemode designed for drifting
 
 # How to install
 Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode (example: gamemode0 server 1)
+
+Make sure to install YSI (it's needed for the registration script and other config file saving) and sscanf2
+
+Make sure to disable all of SA-MP's extra crap or else you may experience slowdown and time/lighting bugs
+You should only have these enabled:
+filterscripts gl_actions gl_mapicon
+plugins sscanf.dll
