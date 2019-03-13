@@ -13,17 +13,16 @@
 #include <a_sampdb>
 #include <YSI\y_ini>
 
-#define DIALOG_REGISTER 1
-#define DIALOG_LOGIN 2
-#define DIALOG_SUCCESS_1 3
-#define DIALOG_SUCCESS_2 4
-#define PATH "/Users/%s.ini"
-
 #define COLOR_WHITE "{ffffff}"
 #define COLOR_GREY "{a3a3a3}"
 #define COLOR_RED "{f81414}"
 #define COLOR_GREEN "{00ff22}"
 #define COLOR_LIGHTBLUE "{00ced1}"
+#define DIALOG_REGISTER 1
+#define DIALOG_LOGIN 2
+#define DIALOG_SUCCESS_1 3
+#define DIALOG_SUCCESS_2 4
+#define PATH "/Users/%s.ini"
 
 main()
 {
@@ -151,10 +150,7 @@ public OnPlayerConnect(playerid)
         INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
         ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_WHITE "Please type your password to login.", "Login", "Quit");
     }
-    else
-    {
-        ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_WHITE "Please type your password to register a new account.", "Register", "Quit");
-    }
+    else ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_WHITE "Please type your password to register a new account.", "Register", "Quit");
     return 1;
 }
 
@@ -184,16 +180,10 @@ public OnPlayerDeath(playerid, killerid, reason)
 public OnPlayerUpdate(playerid)
 {
     SetPlayerHealth(playerid, Float:0x7F800000);
-	if(IsPlayerInAnyVehicle(playerid))
-	{
-        RepairVehicle(GetPlayerVehicleID(playerid));
-	}
+	if(IsPlayerInAnyVehicle(playerid)) RepairVehicle(GetPlayerVehicleID(playerid));
 	new VEH;
 	VEH = GetPlayerVehicleID(playerid);
-	if(VEH > 0)
-	{
-	    AddVehicleComponent(VEH, 1010);
-	}
+	if(VEH > 0) AddVehicleComponent(VEH, 1010);
 	return 1;
 }
 
@@ -231,10 +221,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                     GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
                     ShowPlayerDialog(playerid, DIALOG_SUCCESS_2, DIALOG_STYLE_MSGBOX,""COLOR_WHITE"Success!",""COLOR_GREEN"You have successfully logged in!","Ok","");
                 }
-                else
-                {
-                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
-                }
+                else ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
                 return 1;
             }
         }
@@ -251,10 +238,7 @@ CMD:ban(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else Ban(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been banned!");
 	}
-	else
-	{
-		return SendClientMessage(PLAYER_ID, 0xff0000ff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
-	}
+	else return SendClientMessage(PLAYER_ID, 0xff0000ff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
 }
 
 CMD:kick(PLAYER_ID, PARAMS[])
@@ -266,10 +250,7 @@ CMD:kick(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else Kick(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been banned!");
 	}
-	else
-	{
- 		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
-	}
+	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
 
 }
 
@@ -282,10 +263,7 @@ CMD:admin(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been made admin!");
 	}
-	else
-	{
-	    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
-	}
+	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
 }
 
 CMD:gravity(PLAYER_ID, PARAMS[])
@@ -297,10 +275,7 @@ CMD:gravity(PLAYER_ID, PARAMS[])
 		SetGravity(GRAVITY);
 		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Gravity has been changed!");
 	}
-	else
-	{
-	    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
-	}
+	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
 }
 
 RETURN_VEHICLE_ID(VEHICLE_NAME[])
@@ -311,9 +286,7 @@ RETURN_VEHICLE_ID(VEHICLE_NAME[])
 
 CMD:car(PLAYER_ID, PARAMS[])
 {
-	new CAR_NAME[128];
-	new STRING[128];
-	new Float:X, Float:Y, Float:Z;
+	new CAR_NAME[128], STRING[128], Float:X, Float:Y, Float:Z;
 	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
 	if(sscanf(PARAMS, "s[128]", CAR_NAME)) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Invalid arguments! Valid: /car <name>");
 	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Vehicle does not exist!");
@@ -334,11 +307,7 @@ CMD:cc(PLAYER_ID, PARAMS[])
     else if(!IsPlayerInAnyVehicle(PLAYER_ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not in a vehicle!");
     else if(COLOR_ID < 0 && COLOR_ID > 126) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Color 1 cannot be above 126 or below 0!");
     else if(COLOR_ID2 < 0 && COLOR_ID2 > 126) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Color 2 cannot be above 126 or below 0!");
-    else
-    {
-        ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2);
-        SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Car color changed.");
-    }
+    else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Car color changed.");
 	return 1;
 }
 
@@ -353,10 +322,7 @@ CMD:flip(PLAYER_ID, PARAMS[])
 	  	SetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
 	   	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Your vehicle has been flipped.");
 	}
-	else
-	{
- 		SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not in a vehicle!");
-	}
+	else SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not in a vehicle!");
 	return 1;
 }
 
@@ -386,11 +352,7 @@ CMD:s(PLAYER_ID, PARAMS[])
 		GetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
     	GetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 	}
-	else
-	{
-	    GetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
-	    GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
-	}
+	else GetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]); GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
     SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Saved teleport position.");
 	return 1;
@@ -406,11 +368,7 @@ CMD:r(PLAYER_ID, PARAMS[])
 		    SetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[ PLAYER_ID ]);
 		    SetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 		}
-		else
-		{
-  			SetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
-	        SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
-		}
+		else SetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]); SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 		SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
         SendClientMessage( PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to saved position." );
 	 }
@@ -424,18 +382,14 @@ CMD:goto(PLAYER_ID, PARAMS[])
 	else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 	else
 	{
-	if(IsPlayerInAnyVehicle(PLAYER_ID))
-	{
-		new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
- 	    GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
-	    SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
-		}
-		else
+		if(IsPlayerInAnyVehicle(PLAYER_ID))
 		{
-   			GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
-		    SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
+			new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+        	GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
+ 			SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
 		}
-  	SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to player!");
+		else GetPlayerPos(ID, POS_X, POS_Y, POS_Z); SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
+  		SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to player!");
 	}
 	return 1;
 }
@@ -447,11 +401,7 @@ CMD:ls(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 2499.8733,-1667.6309,13.3512);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
-		SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Los Santos.");
 }
 
@@ -462,11 +412,7 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1934.8811,-2305.5283,13.5469);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
- 		SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Los Santos Airport.");
 }
 
@@ -477,11 +423,7 @@ CMD:sf(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -2670.1101,-4.9832,6.1328);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
-		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to San Fierro.");
 }
 
@@ -492,11 +434,7 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -1315.9419,-223.8595,14.1484);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
-		SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to San Fierro Airport.");
 }
 
@@ -508,12 +446,7 @@ CMD:lv(PLAYER_ID, PARAMS[])
 	    SetVehiclePos(VEHICLE_ID, 2421.7185,1121.9866,10.8125);
 		SetVehicleZAngle(VEHICLE_ID, 90);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
-		SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125);
-		SetPlayerFacingAngle(PLAYER_ID, 90);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125); SetPlayerFacingAngle(PLAYER_ID, 90);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Las Venturas.");
 }
 
@@ -524,10 +457,6 @@ CMD:lvap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1487.9703,1736.9537,10.8125);
 	}
-	else
-	{
-		SetPlayerInterior(PLAYER_ID, 0);
-		SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
-	}
+	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Las Venturas Airport.");
 }
