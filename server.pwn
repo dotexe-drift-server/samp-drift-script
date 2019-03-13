@@ -30,7 +30,6 @@ enum pInfo
 {
     pPass,
     pCash,
-    pAdmin,
     pKills,
     pDeaths,
     pIsAdmin
@@ -42,7 +41,6 @@ public LoadUser_data(playerid,name[],value[])
 {
     INI_Int("Password",PlayerInfo[playerid][pPass]);
     INI_Int("Cash",PlayerInfo[playerid][pCash]);
-    INI_Int("Admin",PlayerInfo[playerid][pAdmin]);
     INI_Int("Kills",PlayerInfo[playerid][pKills]);
     INI_Int("Deaths",PlayerInfo[playerid][pDeaths]);
     INI_Bool("IsAdmin",PlayerInfo[playerid][pIsAdmin]);
@@ -111,7 +109,7 @@ new
 
 public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
 {
-    switch( dialogid )
+    switch(dialogid)
     {
         case DIALOG_REGISTER:
         {
@@ -122,23 +120,20 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 new INI:File = INI_Open(UserPath(playerid));
                 INI_SetTag(File,"data");
                 INI_WriteInt(File, "Password", udb_hash(inputtext));
-                INI_WriteInt(File, "Cash", 0);
-                INI_WriteInt(File, "Admin", 0);
+                GivePlayerMoney(playerid, 1337);
+                INI_WriteInt(File, "Cash", 1337);
                 INI_WriteInt(File, "Kills", 0);
                 INI_WriteInt(File, "Deaths", 0);
                 INI_WriteBool(File, "IsAdmin", false);
                 INI_Close(File);
-                
-                SetSpawnInfo(playerid, 0, 0, 1958.33, 1343.12, 15.36, 269.15, 0, 0, 0, 0, 0, 0);
-                SpawnPlayer(playerid);
-                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "Please leave and rejoin to finish registering.", "Ok", "");
+                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "You have successfully registered!", "Ok", "");
             }
         }
 
         case DIALOG_LOGIN:
         {
-            if ( !response ) return Kick ( playerid );
-            if( response )
+            if (!response) return Kick (playerid);
+            if(response)
             {
                 if(udb_hash(inputtext) == PlayerInfo[playerid][pPass])
                 {
@@ -148,7 +143,7 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
                 }
                 else
                 {
-                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT,""COLOR_WHITE"Login",""COLOR_RED"You have entered an incorrect password.\n"COLOR_WHITE"Type your password below to login.","Login","Quit");
+                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
                 }
                 return 1;
             }
@@ -172,7 +167,6 @@ public OnPlayerDisconnect(playerid, reason)
  	new INI:File = INI_Open(UserPath(playerid));
     INI_SetTag(File, "data");
     INI_WriteInt(File, "Cash", GetPlayerMoney(playerid));
-    INI_WriteInt(File, "Admin", PlayerInfo[playerid][pAdmin]);
     INI_WriteInt(File, "Kills", PlayerInfo[playerid][pKills]);
     INI_WriteInt(File, "Deaths", PlayerInfo[playerid][pDeaths]);
     INI_WriteInt(File, "IsAdmin", PlayerInfo[playerid][pIsAdmin]);
