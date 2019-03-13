@@ -11,6 +11,64 @@
 #include <a_vehicles>
 #include <a_objects>
 #include <a_sampdb>
+#include <YSI\y_ini>
+
+#define DIALOG_REGISTER 1
+#define DIALOG_LOGIN 2
+#define DIALOG_SUCCESS_1 3
+#define DIALOG_SUCCESS_2 4
+#define PATH "/Users/%s.ini"
+
+#define COLOR_WHITE "{FFFFFF}"
+#define COLOR_RED "{F81414}"
+#define COLOR_GREEN "{00FF22}"
+#define COLOR_LIGHTBLUE "{00CED1}"
+
+forward LoadUser_data(playerid,name[],value[]);
+
+enum pInfo
+{
+    pPass,
+    pCash,
+    pAdmin,
+    pKills,
+    pDeaths,
+    pIsAdmin
+}
+
+new PlayerInfo[MAX_PLAYERS][pInfo];
+
+public LoadUser_data(playerid,name[],value[])
+{
+    INI_Int("Password",PlayerInfo[playerid][pPass]);
+    INI_Int("Cash",PlayerInfo[playerid][pCash]);
+    INI_Int("Admin",PlayerInfo[playerid][pAdmin]);
+    INI_Int("Kills",PlayerInfo[playerid][pKills]);
+    INI_Int("Deaths",PlayerInfo[playerid][pDeaths]);
+    INI_Bool("IsAdmin",PlayerInfo[playerid][pIsAdmin]);
+    return 1;
+}
+
+stock UserPath(playerid)
+{
+    new string[128],playername[MAX_PLAYER_NAME];
+    GetPlayerName(playerid,playername,sizeof(playername));
+    format(string,sizeof(string),PATH,playername);
+    return string;
+}
+
+stock udb_hash(buf[]) {
+    new length=strlen(buf);
+    new s1 = 1;
+    new s2 = 0;
+    new n;
+    for (n=0; n<length; n++)
+    {
+       s1 = (s1 + buf[n]) % 65521;
+       s2 = (s2 + s1)     % 65521;
+    }
+    return (s2 << 16) + s1;
+}
 
 main()
 {
@@ -21,7 +79,6 @@ main()
 
 new Text:WATERMARK;
 
-new WEATHER[MAX_PLAYERS], TIME[MAX_PLAYERS];
 new VEHICLE[MAX_PLAYERS];
 new VEHICLE_NAMES[212][] =
 {
@@ -52,6 +109,54 @@ new
     Interior[ MAX_PLAYERS ]
 ;
 
+public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+{
+    switch( dialogid )
+    {
+        case DIALOG_REGISTER:
+        {
+            if (!response) return Kick(playerid);
+            if(response)
+            {
+                if(!strlen(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_RED "You have entered an invalid password.\n" COLOR_WHITE "Type your password below to register a new account.", "Register", "Quit");
+                new INI:File = INI_Open(UserPath(playerid));
+                INI_SetTag(File,"data");
+                INI_WriteInt(File, "Password", udb_hash(inputtext));
+                INI_WriteInt(File, "Cash", 0);
+                INI_WriteInt(File, "Admin", 0);
+                INI_WriteInt(File, "Kills", 0);
+                INI_WriteInt(File, "Deaths", 0);
+                INI_WriteBool(File, "IsAdmin", false);
+                INI_Close(File);
+                
+                SetSpawnInfo(playerid, 0, 0, 1958.33, 1343.12, 15.36, 269.15, 0, 0, 0, 0, 0, 0);
+                SpawnPlayer(playerid);
+                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "Please leave and rejoin to finish registering.", "Ok", "");
+            }
+        }
+
+        case DIALOG_LOGIN:
+        {
+            if ( !response ) return Kick ( playerid );
+            if( response )
+            {
+                if(udb_hash(inputtext) == PlayerInfo[playerid][pPass])
+                {
+                    INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
+                    GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
+                    ShowPlayerDialog(playerid, DIALOG_SUCCESS_2, DIALOG_STYLE_MSGBOX,""COLOR_WHITE"Success!",""COLOR_GREEN"You have successfully logged in!","Ok","");
+                }
+                else
+                {
+                    ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT,""COLOR_WHITE"Login",""COLOR_RED"You have entered an incorrect password.\n"COLOR_WHITE"Type your password below to login.","Login","Quit");
+                }
+                return 1;
+            }
+        }
+    }
+    return 1;
+}
+
 public OnPlayerDisconnect(playerid, reason)
 {
 	for(new i; i < MAX_PLAYERS; i++)
@@ -63,6 +168,15 @@ public OnPlayerDisconnect(playerid, reason)
 	    SendClientMessage(i, 0xffffffff, string);
 	}
 	TextDrawHideForPlayer(playerid, WATERMARK);
+	
+ 	new INI:File = INI_Open(UserPath(playerid));
+    INI_SetTag(File, "data");
+    INI_WriteInt(File, "Cash", GetPlayerMoney(playerid));
+    INI_WriteInt(File, "Admin", PlayerInfo[playerid][pAdmin]);
+    INI_WriteInt(File, "Kills", PlayerInfo[playerid][pKills]);
+    INI_WriteInt(File, "Deaths", PlayerInfo[playerid][pDeaths]);
+    INI_WriteInt(File, "IsAdmin", PlayerInfo[playerid][pIsAdmin]);
+    INI_Close(File);
     return 1;
 }
 
@@ -76,9 +190,17 @@ public OnPlayerConnect(playerid)
      	format(string, sizeof(string), "Player %s(%d) has joined the server", name, playerid);
 	    SendClientMessage(i, 0xffffffff, string);
 	}
-	WEATHER[playerid] = 18;
-	TIME[playerid] = 21;
 	TextDrawShowForPlayer(playerid, WATERMARK);
+	
+ 	if(fexist(UserPath(playerid)))
+    {
+        INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
+        ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_WHITE "Please type your password to login.", "Login", "Quit");
+    }
+    else
+    {
+        ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_WHITE "Please type your password to register a new account.", "Register", "Quit");
+    }
     return 1;
 }
 
@@ -103,11 +225,6 @@ public OnGameModeInit()
 	return 1;
 }
 
-public OnGameModeExit()
-{
-	return 1;
-}
-
 public OnPlayerRequestClass(playerid, classid)
 {
 	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
@@ -118,121 +235,8 @@ public OnPlayerRequestClass(playerid, classid)
 
 public OnPlayerDeath(playerid, killerid, reason)
 {
-	return 1;
-}
-
-public OnVehicleSpawn(vehicleid)
-{
-	return 1;
-}
-
-public OnVehicleDeath(vehicleid, killerid)
-{
-	return 1;
-}
-
-public OnPlayerText(playerid, text[])
-{
-	return 1;
-}
-
-public OnPlayerEnterVehicle(playerid, vehicleid, ispassenger)
-{
-	return 1;
-}
-
-public OnPlayerExitVehicle(playerid, vehicleid)
-{
-	return 1;
-}
-
-public OnPlayerStateChange(playerid, newstate, oldstate)
-{
-	return 1;
-}
-
-public OnPlayerEnterCheckpoint(playerid)
-{
-	return 1;
-}
-
-public OnPlayerLeaveCheckpoint(playerid)
-{
-	return 1;
-}
-
-public OnPlayerEnterRaceCheckpoint(playerid)
-{
-	return 1;
-}
-
-public OnPlayerLeaveRaceCheckpoint(playerid)
-{
-	return 1;
-}
-
-public OnRconCommand(cmd[])
-{
-	return 1;
-}
-
-public OnPlayerRequestSpawn(playerid)
-{
-	return 1;
-}
-
-public OnObjectMoved(objectid)
-{
-	return 1;
-}
-
-public OnPlayerObjectMoved(playerid, objectid)
-{
-	return 1;
-}
-
-public OnPlayerPickUpPickup(playerid, pickupid)
-{
-	return 1;
-}
-
-public OnVehicleMod(playerid, vehicleid, componentid)
-{
-	return 1;
-}
-
-public OnVehiclePaintjob(playerid, vehicleid, paintjobid)
-{
-	return 1;
-}
-
-public OnVehicleRespray(playerid, vehicleid, color1, color2)
-{
-	return 1;
-}
-
-public OnPlayerSelectedMenuRow(playerid, row)
-{
-	return 1;
-}
-
-public OnPlayerExitedMenu(playerid)
-{
-	return 1;
-}
-
-public OnPlayerInteriorChange(playerid, newinteriorid, oldinteriorid)
-{
-	return 1;
-}
-
-public OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
-{
-	return 1;
-}
-
-public OnRconLoginAttempt(ip[], password[], success)
-{
+    PlayerInfo[killerid][pKills]++;
+    PlayerInfo[playerid][pDeaths]++;
 	return 1;
 }
 
@@ -249,39 +253,68 @@ public OnPlayerUpdate(playerid)
 	{
 	    AddVehicleComponent(VEH, 1010);
 	}
- 	SetPlayerWeather(playerid, WEATHER[playerid]);
-	SetPlayerTime(playerid, TIME[playerid]);
 	return 1;
 }
 
-public OnPlayerStreamIn(playerid, forplayerid)
+CMD:ban(PLAYER_ID, PARAMS[])
 {
-	return 1;
+	if(PlayerInfo[PLAYER_ID][pIsAdmin])
+	{
+		new ID;
+		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /ban <id>");
+		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Player is not online!");
+		else Ban(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "Player has been banned!");
+	}
+	else
+	{
+		return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not an admin!");
+	}
 }
 
-public OnPlayerStreamOut(playerid, forplayerid)
+CMD:kick(PLAYER_ID, PARAMS[])
 {
-	return 1;
+	if(PlayerInfo[PLAYER_ID][pIsAdmin])
+	{
+		new ID;
+		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /kick <id>");
+		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Player is not online!");
+		else Kick(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "Player has been banned!");
+	}
+	else
+	{
+ 		return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not an admin!");
+	}
+
 }
 
-public OnVehicleStreamIn(vehicleid, forplayerid)
+CMD:admin(PLAYER_ID, PARAMS[])
 {
-	return 1;
+	if(PlayerInfo[PLAYER_ID][pIsAdmin])
+	{
+		new ID;
+		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /kick <id>");
+		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Player is not online!");
+		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; return SendClientMessage(PLAYER_ID, 0xffffffff, "Player has been made admin!");
+	}
+	else
+	{
+	    return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not an admin!");
+	}
 }
 
-public OnVehicleStreamOut(vehicleid, forplayerid)
+CMD:gravity(PLAYER_ID, PARAMS[])
 {
-	return 1;
-}
-
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
-{
-	return 1;
-}
-
-public OnPlayerClickPlayer(playerid, clickedplayerid, source)
-{
-	return 1;
+	if(PlayerInfo[PLAYER_ID][pIsAdmin])
+	{
+		new Float:GRAVITY;
+		if(sscanf(PARAMS, "f", GRAVITY)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /gravity <value>");
+		SetGravity(GRAVITY);
+		return SendClientMessage(PLAYER_ID, 0xffffffff, "Gravity has been changed!");
+	}
+	else
+	{
+	    return SendClientMessage(PLAYER_ID, 0xff0000ff, "You are not an admin!");
+	}
 }
 
 RETURN_VEHICLE_ID(VEHICLE_NAME[])
@@ -371,10 +404,10 @@ CMD:t(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		new T;
-		if(sscanf(PARAMS, "d", T)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
-		else if(T < 0 || T > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
-		else TIME[PLAYER_ID] = T; SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
+		new TIME;
+		if(sscanf(PARAMS, "d", TIME)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /t <time>");
+		else if(TIME < 0 || TIME > 23) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Time can not be above 23 or below 0!");
+		else SetPlayerTime(PLAYER_ID, TIME); SendClientMessage(PLAYER_ID, 0xffffffff, "Time has been changed!");
 		COMMAND_RAN = true;
 	}
 	return 1;
@@ -385,10 +418,10 @@ CMD:w(PLAYER_ID, PARAMS[])
 	new COMMAND_RAN = false;
 	if(!COMMAND_RAN)
 	{
-		new W;
-		if(sscanf(PARAMS, "d", W)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
-		else if(W < 0 || W > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Weather can not be above 255 or below 0!");
-		else WEATHER[PLAYER_ID] = W; SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
+		new WEATHER;
+		if(sscanf(PARAMS, "d", WEATHER)) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Invalid arguments! Valid: /w <weather>");
+		else if(WEATHER < 0 || WEATHER > 255) return SendClientMessage(PLAYER_ID, 0xff0000ff, "Weather can not be above 255 or below 0!");
+		else SetPlayerWeather(PLAYER_ID, WEATHER); SendClientMessage(PLAYER_ID, 0xffffffff, "Weather has been changed!");
 		COMMAND_RAN = true;
 	}
 	return 1;
