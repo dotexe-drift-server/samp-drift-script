@@ -352,7 +352,11 @@ CMD:s(PLAYER_ID, PARAMS[])
 		GetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
     	GetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 	}
-	else GetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]); GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
+	else
+	{
+		GetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
+		GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
+	}
 	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
     SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Saved teleport position.");
 	return 1;
@@ -368,7 +372,11 @@ CMD:r(PLAYER_ID, PARAMS[])
 		    SetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[ PLAYER_ID ]);
 		    SetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 		}
-		else SetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]); SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
+		else
+		{
+			SetPlayerPos(PLAYER_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
+			SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
+		}
 		SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
         SendClientMessage( PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to saved position." );
 	 }
@@ -388,7 +396,10 @@ CMD:goto(PLAYER_ID, PARAMS[])
         	GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
  			SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
 		}
-		else GetPlayerPos(ID, POS_X, POS_Y, POS_Z); SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
+		else {
+			GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
+			SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
+		}
   		SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to player!");
 	}
 	return 1;
@@ -401,7 +412,10 @@ CMD:ls(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 2499.8733,-1667.6309,13.3512);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
+	else {
+		SetPlayerInterior(PLAYER_ID, 0);
+		SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Los Santos.");
 }
 
@@ -412,7 +426,10 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1934.8811,-2305.5283,13.5469);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
+	else {
+		SetPlayerInterior(PLAYER_ID, 0);
+		SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Los Santos Airport.");
 }
 
@@ -423,7 +440,11 @@ CMD:sf(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -2670.1101,-4.9832,6.1328);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
+	else
+	{
+	    SetPlayerInterior(PLAYER_ID, 0);
+		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to San Fierro.");
 }
 
@@ -434,7 +455,10 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -1315.9419,-223.8595,14.1484);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
+	else {
+		SetPlayerInterior(PLAYER_ID, 0);
+		SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to San Fierro Airport.");
 }
 
@@ -446,7 +470,11 @@ CMD:lv(PLAYER_ID, PARAMS[])
 	    SetVehiclePos(VEHICLE_ID, 2421.7185,1121.9866,10.8125);
 		SetVehicleZAngle(VEHICLE_ID, 90);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125); SetPlayerFacingAngle(PLAYER_ID, 90);
+	else {
+		SetPlayerInterior(PLAYER_ID, 0);
+		SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125);
+		SetPlayerFacingAngle(PLAYER_ID, 90);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Las Venturas.");
 }
 
@@ -457,6 +485,10 @@ CMD:lvap(PLAYER_ID, PARAMS[])
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1487.9703,1736.9537,10.8125);
 	}
-	else SetPlayerInterior(PLAYER_ID, 0); SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
+	else
+	{
+ 		SetPlayerInterior(PLAYER_ID, 0);
+        SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
+	}
 	return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "You've been teleported to Las Venturas Airport.");
 }
