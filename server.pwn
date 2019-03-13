@@ -278,13 +278,13 @@ CMD:admin(PLAYER_ID, PARAMS[])
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
 	{
 		new ID;
-		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, "Invalid arguments! Valid: /kick <id>");
-		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "Player is not online!");
-		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; return SendClientMessage(PLAYER_ID, 0xffffffff, "Player has been made admin!");
+		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Invalid arguments! Valid: /kick <id>");
+		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
+		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been made admin!");
 	}
 	else
 	{
-	    return SendClientMessage(PLAYER_ID, 0xffffffff, "You are not an admin!");
+	    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
 	}
 }
 
@@ -317,13 +317,10 @@ CMD:car(PLAYER_ID, PARAMS[])
 	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
 	if(sscanf(PARAMS, "s[128]", CAR_NAME)) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Invalid arguments! Valid: /car <name>");
 	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Vehicle does not exist!");
-	if(VEHICLE[PLAYER_ID] != 0)
-	{
-        DestroyVehicle(VEHICLE[PLAYER_ID]);
-	}
+	if(VEHICLE[PLAYER_ID] != 0) DestroyVehicle(VEHICLE[PLAYER_ID]);
   	VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
-  	PutPlayerInVehicle(PLAYER_ID,VEHICLE[PLAYER_ID],0);
- 	format(STRING,sizeof(STRING),"Your %s has been spawned.",CAR_NAME);
+  	PutPlayerInVehicle(PLAYER_ID, VEHICLE[PLAYER_ID], 0);
+ 	format(STRING,sizeof(STRING), "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Your %s has been spawned.",CAR_NAME);
  	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
 	return 1;
 }
