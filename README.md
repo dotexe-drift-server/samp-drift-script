@@ -2,6 +2,7 @@
 A SA-MP server gamemode designed for drifting
 
 "You're singlehandedly reviving the drifting community" -d4vst3r
+"You're making me want to record SA-MP again" -7thor
 
 # Current features
 - Infinite nitrous
