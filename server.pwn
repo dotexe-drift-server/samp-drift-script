@@ -440,12 +440,15 @@ CMD:goto(PLAYER_ID, PARAMS[])
 			new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
         	GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
  			SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
+ 			SetVehicleVirtualWorld(VEHICLE_ID, GetPlayerVirtualWorld(ID));
+ 			PutPlayerInVehicle(PLAYER_ID, VEHICLE_ID, 0);
+			SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
 		}
 		else {
 			GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
 			SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
+			SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
 		}
-		SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
   		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to player!");
 	}
 }
