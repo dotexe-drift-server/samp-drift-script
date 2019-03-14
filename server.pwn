@@ -342,7 +342,7 @@ CMD:car(PLAYER_ID, PARAMS[])
 	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Vehicle does not exist!");
 	if(VEHICLE[PLAYER_ID] != 0) DestroyVehicle(VEHICLE[PLAYER_ID]);
   	VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
-	SetVehicleVirtualWorld(GetPlayerVirtualWorld(PLAYER_ID));
+	SetVehicleVirtualWorld(VEHICLE[PLAYER_ID], GetPlayerVirtualWorld(PLAYER_ID));
   	PutPlayerInVehicle(PLAYER_ID, VEHICLE[PLAYER_ID], 0);
  	format(STRING,sizeof(STRING), "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Your %s has been spawned.",CAR_NAME);
  	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
