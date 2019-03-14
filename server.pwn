@@ -32,8 +32,10 @@ main()
 }
 
 new Text:WATERMARK;
+new CARGOD[MAX_PLAYERS] = true, GOD[MAX_PLAYERS] = true;
 new VEHICLE[MAX_PLAYERS];
-new Float: PosX[ MAX_PLAYERS ], Float: PosY[ MAX_PLAYERS ], Float: PosZ[ MAX_PLAYERS ], Float: Angle[ MAX_PLAYERS ], Interior[ MAX_PLAYERS ];
+new TEXT_SHOWN[MAX_PLAYERS] = true;
+new Float:PosX[MAX_PLAYERS], Float:PosY[MAX_PLAYERS], Float:PosZ[MAX_PLAYERS], Float:Angle[MAX_PLAYERS], Interior[MAX_PLAYERS];
 
 enum pInfo
 {
@@ -102,6 +104,7 @@ public OnGameModeInit()
 {
 	SetGameModeText("dotexe drift script");
 	AddPlayerClass(0, 1958.3783, 1343.1572, 15.3746, 269.1425, 0, 0, 0, 0, 0, 0);
+	EnableStuntBonusForAll(0);
 
 	WATERMARK = TextDrawCreate(5, 430, "--");
 	TextDrawFont(WATERMARK,3);
@@ -143,7 +146,7 @@ public OnPlayerConnect(playerid)
      	format(string, sizeof(string), COLOR_GREY "[SERVER]: " COLOR_WHITE "Player %s(%d) has joined the server", name, playerid);
 	    SendClientMessage(i, 0xffffffff, string);
 	}
-	TextDrawShowForPlayer(playerid, WATERMARK);
+	if(TEXT_SHOWN[playerid]) TextDrawShowForPlayer(playerid, WATERMARK);
 
  	if(fexist(UserPath(playerid)))
     {
@@ -179,8 +182,8 @@ public OnPlayerDeath(playerid, killerid, reason)
 
 public OnPlayerUpdate(playerid)
 {
-    SetPlayerHealth(playerid, Float:0x7F800000);
-	if(IsPlayerInAnyVehicle(playerid)) RepairVehicle(GetPlayerVehicleID(playerid));
+    if(GOD[playerid]) SetPlayerHealth(playerid, Float:0x7F800000);
+	if(IsPlayerInAnyVehicle(playerid) && CARGOD[playerid]) RepairVehicle(GetPlayerVehicleID(playerid));
 	new VEH;
 	VEH = GetPlayerVehicleID(playerid);
 	if(VEH > 0) AddVehicleComponent(VEH, 1010);
@@ -229,6 +232,12 @@ public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
     return 1;
 }
 
+RETURN_VEHICLE_ID(VEHICLE_NAME[])
+{
+    for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
+    return INVALID_VEHICLE_ID;
+}
+
 CMD:ban(PLAYER_ID, PARAMS[])
 {
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
@@ -238,7 +247,10 @@ CMD:ban(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else Ban(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been banned!");
 	}
-	else return SendClientMessage(PLAYER_ID, 0xff0000ff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	else
+	{
+		return SendClientMessage(PLAYER_ID, 0xff0000ff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	}
 }
 
 CMD:kick(PLAYER_ID, PARAMS[])
@@ -250,7 +262,10 @@ CMD:kick(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else Kick(ID); return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been banned!");
 	}
-	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	else
+	{
+		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	}
 
 }
 
@@ -263,7 +278,10 @@ CMD:admin(PLAYER_ID, PARAMS[])
 		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Player has been made admin!");
 	}
-	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	else
+	{
+		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	}
 }
 
 CMD:gravity(PLAYER_ID, PARAMS[])
@@ -275,13 +293,30 @@ CMD:gravity(PLAYER_ID, PARAMS[])
 		SetGravity(GRAVITY);
 		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Gravity has been changed!");
 	}
-	else return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	else
+	{
+		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "You are not an admin!");
+	}
 }
 
-RETURN_VEHICLE_ID(VEHICLE_NAME[])
+CMD:cargod(PLAYER_ID, PARAMS[])
 {
-    for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
-    return INVALID_VEHICLE_ID;
+	CARGOD[PLAYER_ID] = !CARGOD[PLAYER_ID];
+    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Car god mode has been toggled! Run this command again to toggle it back on/off.");
+}
+
+CMD:god(PLAYER_ID, PARAMS[])
+{
+	GOD[PLAYER_ID] = !GOD[PLAYER_ID];
+    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "God mode! Run this command again to toggle it back on/off.");
+}
+
+CMD:text(PLAYER_ID, PARAMS[])
+{
+	TEXT_SHOWN[PLAYER_ID] = !TEXT_SHOWN[PLAYER_ID];
+ 	if(TEXT_SHOWN[PLAYER_ID]) TextDrawShowForPlayer(PLAYER_ID, WATERMARK);
+    else TextDrawHideForPlayer(PLAYER_ID, WATERMARK);
+    return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Text has been toggled! Run this command again to toggle it back on/off.");
 }
 
 CMD:car(PLAYER_ID, PARAMS[])
