@@ -19,6 +19,7 @@ Mode:     dotexe drift script
 - Registration and login, passwords saved as a hash in a .ini file (passwords are not saved as raw text)
 - Money, kills, and other things are saved to an .ini file just like the passwords
 - Infinite nitrous
+- TextDraw watermark in the bottom left of the screen
 - Car godmode
 - Player godmode
 - /ls (Los Santos)
@@ -35,6 +36,8 @@ Mode:     dotexe drift script
 - /t time (Change your local player's time)
 - /w weather (Change your local player's weather)
 - /goto id (Go to a player)
+- /vw id (Change virtual worlds)
+- /text (Toggle the watermark in the bottom left)
 
 # How to install
 Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode
