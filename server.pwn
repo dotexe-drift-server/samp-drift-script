@@ -440,9 +440,9 @@ CMD:goto(PLAYER_ID, PARAMS[])
 			new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
         	GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
  			SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
+		 	SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
  			SetVehicleVirtualWorld(VEHICLE_ID, GetPlayerVirtualWorld(ID));
  			PutPlayerInVehicle(PLAYER_ID, VEHICLE_ID, 0);
-			SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
 		}
 		else {
 			GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
