@@ -32,9 +32,9 @@ main()
 }
 
 new Text:WATERMARK;
-new CARGOD[MAX_PLAYERS] = true, GOD[MAX_PLAYERS] = true;
+new CARGOD[MAX_PLAYERS], GOD[MAX_PLAYERS];
 new VEHICLE[MAX_PLAYERS];
-new TEXT_SHOWN[MAX_PLAYERS] = true;
+new TEXT_SHOWN[MAX_PLAYERS];
 new Float:PosX[MAX_PLAYERS], Float:PosY[MAX_PLAYERS], Float:PosZ[MAX_PLAYERS], Float:Angle[MAX_PLAYERS], Interior[MAX_PLAYERS];
 
 enum pInfo
@@ -138,6 +138,9 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerConnect(playerid)
 {
+	CARGOD[playerid] = true;
+	GOD[playerid] = true;
+	TEXT_SHOWN[playerid] = true;
 	for(new i; i < MAX_PLAYERS; i++)
 	{
 	    new name[MAX_PLAYER_NAME + 1];
@@ -308,6 +311,10 @@ CMD:cargod(PLAYER_ID, PARAMS[])
 CMD:god(PLAYER_ID, PARAMS[])
 {
 	GOD[PLAYER_ID] = !GOD[PLAYER_ID];
+	if(!GOD[PLAYER_ID])
+	{
+	    SetPlayerHealth(PLAYER_ID, 100);
+	}
     return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "God mode! Run this command again to toggle it back on/off.");
 }
 
