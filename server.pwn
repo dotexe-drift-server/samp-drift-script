@@ -429,7 +429,7 @@ CMD:r(PLAYER_ID, PARAMS[])
 
 CMD:goto(PLAYER_ID, PARAMS[])
 {
-	new Float:POS_X, Float:POS_Y, Float:POS_Z, ID;
+	new Float:POS_X, Float:POS_Y, Float:POS_Z, ID, VIRTUALWORLD;
 	if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Invalid arguments! Valid: /goto <id>");
 	else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_RED "Player is not online!");
 	else
@@ -444,6 +444,8 @@ CMD:goto(PLAYER_ID, PARAMS[])
 			GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
 			SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
 		}
+		GetPlayerVirtualWorld(ID, VIRTUALWORLD);
+		SetPlayerVirtualWorld(PLAYER_ID, VIRTUALWORLD);
   		return SendClientMessage(PLAYER_ID, 0xffffffff, "" COLOR_GREY "[SERVER]: " COLOR_WHITE "Teleported to player!");
 	}
 }
