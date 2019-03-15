@@ -45,6 +45,7 @@ enum pInfo
     pCash,
     pKills,
     pDeaths,
+    pSkin,
     pIsAdmin
 }
 new PlayerInfo[MAX_PLAYERS][pInfo];
@@ -56,6 +57,7 @@ public LoadUser_data(playerid,name[],value[])
     INI_Int("Cash",PlayerInfo[playerid][pCash]);
     INI_Int("Kills",PlayerInfo[playerid][pKills]);
     INI_Int("Deaths",PlayerInfo[playerid][pDeaths]);
+    INI_Int("Skin",PlayerInfo[playerid][pSkin]);
     INI_Bool("IsAdmin",PlayerInfo[playerid][pIsAdmin]);
     return 1;
 }
@@ -133,6 +135,7 @@ public OnPlayerDisconnect(playerid, reason)
     INI_WriteInt(File, "Cash", GetPlayerMoney(playerid));
     INI_WriteInt(File, "Kills", PlayerInfo[playerid][pKills]);
     INI_WriteInt(File, "Deaths", PlayerInfo[playerid][pDeaths]);
+    INI_WriteInt(File, "Skin", PlayerInfo[playerid][pSkin]);
     INI_WriteInt(File, "IsAdmin", PlayerInfo[playerid][pIsAdmin]);
     INI_Close(File);
     return 1;
@@ -167,6 +170,7 @@ public OnPlayerSpawn(playerid)
 {
 	GetPlayerPos(playerid, PosX[playerid], PosY[playerid], PosZ[playerid]);
  	GetPlayerFacingAngle(playerid, Angle[playerid]);
+	SetPlayerSkin(playerid, PlayerInfo[playerid][pSkin]);
     return 1;
 }
 
@@ -248,7 +252,7 @@ CMD:skin(PLAYER_ID, PARAMS[])
 	new SKIN;
     if(sscanf(PARAMS, "d", SKIN)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
     else if(SKIN < 0 || SKIN > 299) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 299 or below 0!");
-    else SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
+    else PlayerInfo[PLAYER_ID][pSkin] = SKIN; SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
 }
 
 CMD:vw(PLAYER_ID, PARAMS[])
