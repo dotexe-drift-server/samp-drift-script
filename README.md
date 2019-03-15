@@ -22,6 +22,7 @@ Mode:     dotexe drift script
 - TextDraw watermark in the bottom left of the screen
 - Car godmode
 - Player godmode
+- Admin system
 - /ls (Los Santos)
 - /lsap (Los Santos Airport)
 - /lv (Las Venturas)
@@ -38,6 +39,11 @@ Mode:     dotexe drift script
 - /goto id (Go to a player)
 - /vw id (Change virtual worlds)
 - /text (Toggle the watermark in the bottom left)
+- /skin id (Change your player's skin)
+- /admin id (Make a player admin)
+- /kick id (Kick a player)
+- /ban id (Ban a player)
+- /gravity gravity (Change gravity for the entire server. Default is 0.008. You have to be admin to run this command.)
 
 # How to install
 Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode
