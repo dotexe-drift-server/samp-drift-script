@@ -23,6 +23,7 @@ Mode:     dotexe drift script
 - Car godmode
 - Player godmode
 - Admin system
+- /cmds (Help page - view all the commands)
 - /ls (Los Santos)
 - /lsap (Los Santos Airport)
 - /lv (Las Venturas)
