@@ -22,6 +22,7 @@
 #define DIALOG_LOGIN 2
 #define DIALOG_SUCCESS_1 3
 #define DIALOG_SUCCESS_2 4
+#define DIALOG_CMDS 5
 #define PATH "/Users/%s.ini"
 #define PREFIX "" COLOR_GREY "[SERVER]: " COLOR_WHITE
 #define PREFIX_ERROR "" COLOR_GREY "[SERVER]: " COLOR_RED
@@ -245,6 +246,21 @@ RETURN_VEHICLE_ID(VEHICLE_NAME[])
 {
     for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
     return INVALID_VEHICLE_ID;
+}
+
+CMD:cmds(PLAYER_ID, PARAMS[])
+{
+	new TEXT[1337];
+	strcat(TEXT, COLOR_RED "Player Commands\n" COLOR_WHITE);
+	strcat(TEXT, "/ls - Los Santos\n/lsap - Los Santos Airport\n/lv - Las Venturas\n/lvap - Las Venturas Airport\n/sf - San Fierro\n/sfap - San Fierro Airport\n");
+	strcat(TEXT, "/car <name> - Spawn a car\n/cc <id1> <id2> - Change car color\n/flip - Flip your car upright\n/s - Save a custom teleport position\n/r - Load your saved teleport position\n");
+	strcat(TEXT, "/t <time> - Change your local player's time\n/w <weather> - Change your local player's weather\n");
+	strcat(TEXT, "/goto <id> - Teleport to a player\n/vw <id> - Change virtual worlds\n/text - Toggle the watermark in the bottom left\n/skin <id> - Change your player's skin\n");
+	strcat(TEXT, COLOR_RED "Admin Commands\n" COLOR_WHITE);
+	strcat(TEXT, "/admin <id> - Make a player admin\n/kick <id> - Kick a player\n/ban<id> - Ban a player\n");
+	strcat(TEXT, "/gravity <gravity> - Change gravity for the entire server. Default: 0.008");
+	ShowPlayerDialog(PLAYER_ID, DIALOG_CMDS, DIALOG_STYLE_MSGBOX, "Commands", TEXT, "Ok");
+	return 1;
 }
 
 CMD:skin(PLAYER_ID, PARAMS[])
