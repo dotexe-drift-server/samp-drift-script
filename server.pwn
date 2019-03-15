@@ -266,16 +266,16 @@ CMD:cmds(PLAYER_ID, PARAMS[])
 CMD:skin(PLAYER_ID, PARAMS[])
 {
 	new SKIN;
-    if(sscanf(PARAMS, "d", SKIN)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
-    else if(SKIN < 0 || SKIN > 299) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 299 or below 0!");
+    if(sscanf(PARAMS, "d", SKIN)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
+    else if(SKIN < 0 || SKIN > 299) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 299 or below 0!");
     else PlayerInfo[PLAYER_ID][pSkin] = SKIN; SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
 }
 
 CMD:vw(PLAYER_ID, PARAMS[])
 {
 	new WORLD;
-    if(sscanf(PARAMS, "d", WORLD)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
-    else if(WORLD < 0 || WORLD > 255) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
+    if(sscanf(PARAMS, "d", WORLD)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
+    else if(WORLD < 0 || WORLD > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
     else SetPlayerVirtualWorld(PLAYER_ID, WORLD); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed.");
 }
 
@@ -284,18 +284,12 @@ CMD:ban(PLAYER_ID, PARAMS[])
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
 	{
 		new ID;
-		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /ban <id>");
-		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else
-		{
-			Ban(ID);
-			return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
-		}
+		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /ban <id>");
+		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
+		else Ban(ID); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
 	}
-	else
-	{
-		return SendClientMessage(PLAYER_ID, 0xff0000ff, PREFIX_ERROR  "You are not an admin!");
-	}
+	else SendClientMessage(PLAYER_ID, 0xff0000ff, PREFIX_ERROR  "You are not an admin!");
+    return 1;
 }
 
 CMD:kick(PLAYER_ID, PARAMS[])
@@ -303,19 +297,12 @@ CMD:kick(PLAYER_ID, PARAMS[])
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
 	{
 		new ID;
-		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
-		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else
-		{
-	 		Kick(ID);
-	 		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
-		}
+		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
+		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
+		else Kick(ID); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
 	}
-	else
-	{
-		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	}
-
+	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
+	return 1;
 }
 
 CMD:admin(PLAYER_ID, PARAMS[])
@@ -323,18 +310,12 @@ CMD:admin(PLAYER_ID, PARAMS[])
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
 	{
 		new ID;
-		if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
-		else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else
-		{
-	 		PlayerInfo[PLAYER_ID][pIsAdmin] = true;
-	 		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been made admin!");
-		}
+		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
+		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
+		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been made admin!");
 	}
-	else
-	{
-		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	}
+	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
+	return 1;
 }
 
 CMD:gravity(PLAYER_ID, PARAMS[])
@@ -342,14 +323,12 @@ CMD:gravity(PLAYER_ID, PARAMS[])
 	if(PlayerInfo[PLAYER_ID][pIsAdmin])
 	{
 		new Float:GRAVITY;
-		if(sscanf(PARAMS, "f", GRAVITY)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /gravity <value>");
+		if(sscanf(PARAMS, "f", GRAVITY)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /gravity <value>");
 		SetGravity(GRAVITY);
-		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Gravity has been changed!");
+	 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Gravity has been changed!");
 	}
-	else
-	{
-		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	}
+	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
+	return 1;
 }
 
 CMD:cargod(PLAYER_ID, PARAMS[])
@@ -365,7 +344,8 @@ CMD:god(PLAYER_ID, PARAMS[])
 	{
 	    SetPlayerHealth(PLAYER_ID, 100);
 	}
-    return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "God mode! Run this command again to toggle it back on/off.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "God mode! Run this command again to toggle it back on/off.");
+ 	return 1;
 }
 
 CMD:text(PLAYER_ID, PARAMS[])
@@ -373,34 +353,36 @@ CMD:text(PLAYER_ID, PARAMS[])
 	TEXT_SHOWN[PLAYER_ID] = !TEXT_SHOWN[PLAYER_ID];
  	if(TEXT_SHOWN[PLAYER_ID]) TextDrawShowForPlayer(PLAYER_ID, WATERMARK);
     else TextDrawHideForPlayer(PLAYER_ID, WATERMARK);
-    return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Text has been toggled! Run this command again to toggle it back on/off.");
+    SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Text has been toggled! Run this command again to toggle it back on/off.");
+    return 1;
 }
 
 CMD:car(PLAYER_ID, PARAMS[])
 {
 	new CAR_NAME[128], STRING[128], Float:X, Float:Y, Float:Z;
 	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
-	if(sscanf(PARAMS, "s[128]", CAR_NAME)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /car <name>");
-	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Vehicle does not exist!");
+	if(sscanf(PARAMS, "s[128]", CAR_NAME)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /car <name>");
+	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Vehicle does not exist!");
 	if(VEHICLE[PLAYER_ID] != 0) DestroyVehicle(VEHICLE[PLAYER_ID]);
   	VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
 	SetVehicleVirtualWorld(VEHICLE[PLAYER_ID], GetPlayerVirtualWorld(PLAYER_ID));
   	PutPlayerInVehicle(PLAYER_ID, VEHICLE[PLAYER_ID], 0);
  	format(STRING,sizeof(STRING), PREFIX "Your %s has been spawned.",CAR_NAME);
  	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
-	return 1;
+ 	return 1;
 }
 
 CMD:cc(PLAYER_ID, PARAMS[])
 {
 	new COLOR_ID, COLOR_ID2, VEHICLE_ID, STR[128];
   	VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(sscanf(PARAMS, "dd", COLOR_ID,COLOR_ID2)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /cc <color1> <color2>");
-    else if(!IsPlayerInAnyVehicle(PLAYER_ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(COLOR_ID < 0 || COLOR_ID > 126) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color 1 cannot be above 126 or below 0!");
-    else if(COLOR_ID2 < 0 || COLOR_ID2 > 126) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color 2 cannot be above 126 or below 0!");
-    else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed.");
+    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    else if(sscanf(PARAMS, "dd", COLOR_ID,COLOR_ID2)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /cc <color1> <color2>");
+    else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    else if(COLOR_ID < 0 || COLOR_ID > 126) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 126 or below 0!");
+    else if(COLOR_ID2 < 0 || COLOR_ID2 > 126) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 126 or below 0!");
+    else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed.");
+    return 1;
 }
 
 CMD:flip(PLAYER_ID, PARAMS[])
@@ -412,25 +394,28 @@ CMD:flip(PLAYER_ID, PARAMS[])
 	   	CURRENT_VEHICLE = GetPlayerVehicleID(PLAYER_ID);
 	   	GetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
 	  	SetVehicleZAngle(CURRENT_VEHICLE, ANGLE);
-	   	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your vehicle has been flipped.");
+  	 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your vehicle has been flipped.");
 	}
-	else return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+	return 1;
 }
 
 CMD:t(PLAYER_ID, PARAMS[])
 {
 	new TIME;
-	if(sscanf(PARAMS, "d", TIME)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /t <time>");
-	else if(TIME < 0 || TIME > 23) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Time can not be above 23 or below 0!");
-	else SetPlayerTime(PLAYER_ID, TIME); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!");
+	if(sscanf(PARAMS, "d", TIME)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /t <time>");
+	else if(TIME < 0 || TIME > 23) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Time can not be above 23 or below 0!");
+	else SetPlayerTime(PLAYER_ID, TIME); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!");
+	return 1;
 }
 
 CMD:w(PLAYER_ID, PARAMS[])
 {
 	new WEATHER;
-	if(sscanf(PARAMS, "d", WEATHER)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /w <weather>");
-	else if(WEATHER < 0 || WEATHER > 255) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Weather can not be above 255 or below 0!");
-	else SetPlayerWeather(PLAYER_ID, WEATHER); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Weather has been changed!");
+	if(sscanf(PARAMS, "d", WEATHER)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /w <weather>");
+	else if(WEATHER < 0 || WEATHER > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Weather can not be above 255 or below 0!");
+	else SetPlayerWeather(PLAYER_ID, WEATHER); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Weather has been changed!");
+	return 1;
 }
 
 CMD:s(PLAYER_ID, PARAMS[])
@@ -447,7 +432,8 @@ CMD:s(PLAYER_ID, PARAMS[])
 		GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 	}
 	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-    return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Saved teleport position.");
+    SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Saved teleport position.");
+    return 1;
 }
 
 CMD:r(PLAYER_ID, PARAMS[])
@@ -466,15 +452,16 @@ CMD:r(PLAYER_ID, PARAMS[])
 			SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 		}
 		SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-        return SendClientMessage( PLAYER_ID, 0xffffffff, PREFIX "Teleported to saved position." );
+        SendClientMessage( PLAYER_ID, 0xffffffff, PREFIX "Teleported to saved position." );
 	 }
+	 return 1;
 }
 
 CMD:goto(PLAYER_ID, PARAMS[])
 {
 	new Float:POS_X, Float:POS_Y, Float:POS_Z, ID;
-	if(sscanf(PARAMS, "d", ID)) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /goto <id>");
-	else if(!(IsPlayerConnected(ID))) return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
+	if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /goto <id>");
+	else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
 	else
 	{
 		if(IsPlayerInAnyVehicle(PLAYER_ID))
@@ -491,8 +478,9 @@ CMD:goto(PLAYER_ID, PARAMS[])
 			SetPlayerPos(PLAYER_ID, POS_X, POS_Y, POS_Z);
 			SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
 		}
-  		return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Teleported to player!");
+	 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Teleported to player!");
 	}
+	return 1;
 }
 
 CMD:ls(PLAYER_ID, PARAMS[])
@@ -506,7 +494,8 @@ CMD:ls(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos.");
+ 	return 1;
 }
 
 CMD:lsap(PLAYER_ID, PARAMS[])
@@ -520,7 +509,8 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos Airport.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos Airport.");
+ 	return 1;
 }
 
 CMD:sf(PLAYER_ID, PARAMS[])
@@ -535,7 +525,8 @@ CMD:sf(PLAYER_ID, PARAMS[])
 	    SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro.");
+ 	return 1;
 }
 
 CMD:sfap(PLAYER_ID, PARAMS[])
@@ -549,7 +540,8 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro Airport.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro Airport.");
+ 	return 1;
 }
 
 CMD:lv(PLAYER_ID, PARAMS[])
@@ -565,7 +557,8 @@ CMD:lv(PLAYER_ID, PARAMS[])
 		SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125);
 		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas.");
+ 	return 1;
 }
 
 CMD:lvap(PLAYER_ID, PARAMS[])
@@ -580,5 +573,6 @@ CMD:lvap(PLAYER_ID, PARAMS[])
  		SetPlayerInterior(PLAYER_ID, 0);
         SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
 	}
-	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas Airport.");
+ 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas Airport.");
+ 	return 1;
 }
