@@ -11,7 +11,6 @@
 #include <a_vehicles>
 #include <a_objects>
 #include <a_sampdb>
-#include <YSI\y_ini>
 
 #define COLOR_WHITE "{ffffff}"
 #define COLOR_GREY "{a3a3a3}"
@@ -39,50 +38,6 @@ new CARGOD[MAX_PLAYERS], GOD[MAX_PLAYERS];
 new VEHICLE[MAX_PLAYERS];
 new TEXT_SHOWN[MAX_PLAYERS];
 new Float:PosX[MAX_PLAYERS], Float:PosY[MAX_PLAYERS], Float:PosZ[MAX_PLAYERS], Float:Angle[MAX_PLAYERS], Interior[MAX_PLAYERS];
-
-enum pInfo
-{
-    pPass,
-    pCash,
-    pKills,
-    pDeaths,
-    pSkin,
-    pIsAdmin
-}
-new PlayerInfo[MAX_PLAYERS][pInfo];
-
-forward LoadUser_data(playerid,name[],value[]);
-public LoadUser_data(playerid,name[],value[])
-{
-    INI_Int("Password",PlayerInfo[playerid][pPass]);
-    INI_Int("Cash",PlayerInfo[playerid][pCash]);
-    INI_Int("Kills",PlayerInfo[playerid][pKills]);
-    INI_Int("Deaths",PlayerInfo[playerid][pDeaths]);
-    INI_Int("Skin",PlayerInfo[playerid][pSkin]);
-    INI_Bool("IsAdmin",PlayerInfo[playerid][pIsAdmin]);
-    return 1;
-}
-
-stock UserPath(playerid)
-{
-    new string[128],playername[MAX_PLAYER_NAME];
-    GetPlayerName(playerid,playername,sizeof(playername));
-    format(string,sizeof(string),PATH,playername);
-    return string;
-}
-
-stock udb_hash(buf[]) {
-    new length=strlen(buf);
-    new s1 = 1;
-    new s2 = 0;
-    new n;
-    for (n=0; n<length; n++)
-    {
-       s1 = (s1 + buf[n]) % 65521;
-       s2 = (s2 + s1)     % 65521;
-    }
-    return (s2 << 16) + s1;
-}
 
 new VEHICLE_NAMES[212][] =
 {
@@ -119,27 +74,12 @@ public OnGameModeInit()
 	return 1;
 }
 
-public OnPlayerDisconnect(playerid, reason)
+public OnPlayerRequestClass(playerid, classid)
 {
-	for(new i; i < MAX_PLAYERS; i++)
-	{
-	    new name[MAX_PLAYER_NAME + 1];
-	    GetPlayerName(playerid, name, sizeof(name));
- 		new string[128];
- 		format(string, sizeof(string), PREFIX "Player %s(%d) has left the server", name, playerid);
-	    SendClientMessage(i, 0xffffffff, string);
-	}
-	TextDrawHideForPlayer(playerid, WATERMARK);
-
- 	new INI:File = INI_Open(UserPath(playerid));
-    INI_SetTag(File, "data");
-    INI_WriteInt(File, "Cash", GetPlayerMoney(playerid));
-    INI_WriteInt(File, "Kills", PlayerInfo[playerid][pKills]);
-    INI_WriteInt(File, "Deaths", PlayerInfo[playerid][pDeaths]);
-    INI_WriteInt(File, "Skin", PlayerInfo[playerid][pSkin]);
-    INI_WriteInt(File, "IsAdmin", PlayerInfo[playerid][pIsAdmin]);
-    INI_Close(File);
-    return 1;
+	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
+	SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
+	SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
+	return 1;
 }
 
 public OnPlayerConnect(playerid)
@@ -156,37 +96,20 @@ public OnPlayerConnect(playerid)
 	    SendClientMessage(i, 0xffffffff, string);
 	}
 	if(TEXT_SHOWN[playerid]) TextDrawShowForPlayer(playerid, WATERMARK);
-
- 	if(fexist(UserPath(playerid)))
-    {
-        INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
-        ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_WHITE "Please type your password to login.", "Login", "Quit");
-    }
-    else ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_WHITE "Please type your password to register a new account.", "Register", "Quit");
-    return 1;
-}
-
-
-public OnPlayerSpawn(playerid)
-{
-	GetPlayerPos(playerid, PosX[playerid], PosY[playerid], PosZ[playerid]);
- 	GetPlayerFacingAngle(playerid, Angle[playerid]);
-	SetPlayerSkin(playerid, PlayerInfo[playerid][pSkin]);
-    return 1;
-}
-
-public OnPlayerRequestClass(playerid, classid)
-{
-	SetPlayerPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraPos(playerid, 1958.3783, 1343.1572, 15.3746);
-	SetPlayerCameraLookAt(playerid, 1958.3783, 1343.1572, 15.3746);
 	return 1;
 }
 
-public OnPlayerDeath(playerid, killerid, reason)
+public OnPlayerDisconnect(playerid, reason)
 {
-    PlayerInfo[killerid][pKills]++;
-    PlayerInfo[playerid][pDeaths]++;
+	for(new i; i < MAX_PLAYERS; i++)
+	{
+	    new name[MAX_PLAYER_NAME + 1];
+	    GetPlayerName(playerid, name, sizeof(name));
+ 		new string[128];
+ 		format(string, sizeof(string), PREFIX "Player %s(%d) has left the server", name, playerid);
+	    SendClientMessage(i, 0xffffffff, string);
+	}
+	TextDrawHideForPlayer(playerid, WATERMARK);
 	return 1;
 }
 
@@ -200,44 +123,11 @@ public OnPlayerUpdate(playerid)
 	return 1;
 }
 
-public OnDialogResponse(playerid, dialogid, response, listitem, inputtext[])
+public OnPlayerCommandPerformed(playerid, cmdtext[], success)
 {
-    switch(dialogid)
+	if (!success)
     {
-        case DIALOG_REGISTER:
-        {
-            if (!response) return Kick(playerid);
-            if(response)
-            {
-                if(!strlen(inputtext)) return ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Registering...", "" COLOR_RED "You have entered an invalid password.\n" COLOR_WHITE "Type your password below to register a new account.", "Register", "Quit");
-                new INI:File = INI_Open(UserPath(playerid));
-                INI_SetTag(File,"data");
-                INI_WriteInt(File, "Password", udb_hash(inputtext));
-                GivePlayerMoney(playerid, 1337);
-                INI_WriteInt(File, "Cash", 1337);
-                INI_WriteInt(File, "Kills", 0);
-                INI_WriteInt(File, "Deaths", 0);
-                INI_WriteBool(File, "IsAdmin", false);
-                INI_Close(File);
-                ShowPlayerDialog(playerid, DIALOG_SUCCESS_1, DIALOG_STYLE_MSGBOX, "" COLOR_WHITE "Success!", "" COLOR_GREEN "You have successfully registered!", "Ok", "");
-            }
-        }
-
-        case DIALOG_LOGIN:
-        {
-            if (!response) return Kick (playerid);
-            if(response)
-            {
-                if(udb_hash(inputtext) == PlayerInfo[playerid][pPass])
-                {
-                    INI_ParseFile(UserPath(playerid), "LoadUser_%s", .bExtra = true, .extra = playerid);
-                    GivePlayerMoney(playerid, PlayerInfo[playerid][pCash]);
-                    ShowPlayerDialog(playerid, DIALOG_SUCCESS_2, DIALOG_STYLE_MSGBOX,""COLOR_WHITE"Success!",""COLOR_GREEN"You have successfully logged in!","Ok","");
-                }
-                else ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_INPUT, "" COLOR_WHITE "Login", "" COLOR_RED "You have entered an incorrect password.\n" COLOR_WHITE "Type your password below to login.", "Login", "Quit");
-                return 1;
-            }
-        }
+		SendClientMessage(playerid, 0xffffffff, PREFIX_ERROR "Invalid command! Try /cmds for help");
     }
     return 1;
 }
@@ -256,9 +146,6 @@ CMD:cmds(PLAYER_ID, PARAMS[])
 	strcat(TEXT, "/car <name> - Spawn a car\n/cc <id1> <id2> - Change car color\n/flip - Flip your car upright\n/s - Save a custom teleport position\n/r - Load your saved teleport position\n");
 	strcat(TEXT, "/t <time> - Change your local player's time\n/w <weather> - Change your local player's weather\n");
 	strcat(TEXT, "/goto <id> - Teleport to a player\n/vw <id> - Change virtual worlds\n/text - Toggle the watermark in the bottom left\n/skin <id> - Change your player's skin\n");
-	strcat(TEXT, COLOR_RED "Admin Commands\n" COLOR_WHITE);
-	strcat(TEXT, "/admin <id> - Make a player admin\n/kick <id> - Kick a player\n/ban<id> - Ban a player\n");
-	strcat(TEXT, "/gravity <gravity> - Change gravity for the entire server. Default: 0.008");
 	ShowPlayerDialog(PLAYER_ID, DIALOG_CMDS, DIALOG_STYLE_MSGBOX, "Commands", TEXT, "Ok");
 	return 1;
 }
@@ -268,7 +155,7 @@ CMD:skin(PLAYER_ID, PARAMS[])
 	new SKIN;
     if(sscanf(PARAMS, "d", SKIN)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
     else if(SKIN < 0 || SKIN > 299) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 299 or below 0!");
-    else PlayerInfo[PLAYER_ID][pSkin] = SKIN; SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
+    else SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
 }
 
 CMD:vw(PLAYER_ID, PARAMS[])
@@ -277,58 +164,6 @@ CMD:vw(PLAYER_ID, PARAMS[])
     if(sscanf(PARAMS, "d", WORLD)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
     else if(WORLD < 0 || WORLD > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
     else SetPlayerVirtualWorld(PLAYER_ID, WORLD); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed.");
-}
-
-CMD:ban(PLAYER_ID, PARAMS[])
-{
-	if(PlayerInfo[PLAYER_ID][pIsAdmin])
-	{
-		new ID;
-		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /ban <id>");
-		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else Ban(ID); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
-	}
-	else SendClientMessage(PLAYER_ID, 0xff0000ff, PREFIX_ERROR  "You are not an admin!");
-    return 1;
-}
-
-CMD:kick(PLAYER_ID, PARAMS[])
-{
-	if(PlayerInfo[PLAYER_ID][pIsAdmin])
-	{
-		new ID;
-		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
-		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else Kick(ID); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been banned!");
-	}
-	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	return 1;
-}
-
-CMD:admin(PLAYER_ID, PARAMS[])
-{
-	if(PlayerInfo[PLAYER_ID][pIsAdmin])
-	{
-		new ID;
-		if(sscanf(PARAMS, "d", ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /kick <id>");
-		else if(!(IsPlayerConnected(ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Player is not online!");
-		else PlayerInfo[PLAYER_ID][pIsAdmin] = true; SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Player has been made admin!");
-	}
-	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	return 1;
-}
-
-CMD:gravity(PLAYER_ID, PARAMS[])
-{
-	if(PlayerInfo[PLAYER_ID][pIsAdmin])
-	{
-		new Float:GRAVITY;
-		if(sscanf(PARAMS, "f", GRAVITY)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /gravity <value>");
-		SetGravity(GRAVITY);
-	 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Gravity has been changed!");
-	}
-	else SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not an admin!");
-	return 1;
 }
 
 CMD:cargod(PLAYER_ID, PARAMS[])
@@ -379,8 +214,8 @@ CMD:cc(PLAYER_ID, PARAMS[])
     if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
     else if(sscanf(PARAMS, "dd", COLOR_ID,COLOR_ID2)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /cc <color1> <color2>");
     else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(COLOR_ID < 0 || COLOR_ID > 126) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 126 or below 0!");
-    else if(COLOR_ID2 < 0 || COLOR_ID2 > 126) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 126 or below 0!");
+    else if(COLOR_ID < 0 || COLOR_ID > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
+    else if(COLOR_ID2 < 0 || COLOR_ID2 > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
     else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed.");
     return 1;
 }
@@ -405,7 +240,7 @@ CMD:t(PLAYER_ID, PARAMS[])
 	new TIME;
 	if(sscanf(PARAMS, "d", TIME)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /t <time>");
 	else if(TIME < 0 || TIME > 23) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Time can not be above 23 or below 0!");
-	else SetPlayerTime(PLAYER_ID, TIME); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!");
+	else SetPlayerTime(PLAYER_ID, TIME, 0); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!");
 	return 1;
 }
 
@@ -489,10 +324,12 @@ CMD:ls(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 2499.8733,-1667.6309,13.3512);
+   		SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 2499.8733,-1667.6309,13.3512);
+		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos.");
  	return 1;
@@ -504,10 +341,12 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1934.8811,-2305.5283,13.5469);
+	    SetVehicleZAngle(VEHICLE_ID, 180);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 1934.8811,-2305.5283,13.5469);
+		SetPlayerFacingAngle(PLAYER_ID, 180);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Los Santos Airport.");
  	return 1;
@@ -519,11 +358,13 @@ CMD:sf(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -2670.1101,-4.9832,6.1328);
+	    SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else
 	{
 	    SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
+		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro.");
  	return 1;
@@ -535,10 +376,12 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, -1315.9419,-223.8595,14.1484);
+	    SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -1315.9419,-223.8595,14.1484);
+		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to San Fierro Airport.");
  	return 1;
@@ -550,12 +393,12 @@ CMD:lv(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 2421.7185,1121.9866,10.8125);
-		SetVehicleZAngle(VEHICLE_ID, 90);
+		SetVehicleZAngle(VEHICLE_ID, 0);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, 2421.7185,1121.9866,10.8125);
-		SetPlayerFacingAngle(PLAYER_ID, 90);
+		SetPlayerFacingAngle(PLAYER_ID, 0);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas.");
  	return 1;
@@ -567,11 +410,13 @@ CMD:lvap(PLAYER_ID, PARAMS[])
 	{
 	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 	    SetVehiclePos(VEHICLE_ID, 1487.9703,1736.9537,10.8125);
+	    SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else
 	{
  		SetPlayerInterior(PLAYER_ID, 0);
         SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
+        SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas Airport.");
  	return 1;
