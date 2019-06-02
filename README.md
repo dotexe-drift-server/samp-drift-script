@@ -5,8 +5,8 @@ A SA-MP server gamemode designed for drifting
 The script is running on my drift server.
 
 ```
-HostName: [0.3.7] dotexe's drift server
-Address:  204.118.69.87:1337
+HostName: dotexe drift server
+Address:  maikarusan.001www.com:1337
 Mode:     dotexe drift script
 ```
 
@@ -16,13 +16,10 @@ Mode:     dotexe drift script
 
 # Current features
 - Chat notifications when a player leaves or joins the server
-- Registration and login, passwords saved as a hash in a .ini file (passwords are not saved as raw text)
-- Money, kills, and other things are saved to an .ini file just like the passwords
 - Infinite nitrous
 - TextDraw watermark in the bottom left of the screen
 - Car godmode
 - Player godmode
-- Admin system
 - /cmds (Help page - view all the commands)
 - /ls (Los Santos)
 - /lsap (Los Santos Airport)
@@ -41,10 +38,7 @@ Mode:     dotexe drift script
 - /vw id (Change virtual worlds)
 - /text (Toggle the watermark in the bottom left)
 - /skin id (Change your player's skin)
-- /admin id (Make a player admin)
-- /kick id (Kick a player)
-- /ban id (Ban a player)
-- /gravity gravity (Change gravity for the entire server. Default is 0.008. You have to be admin to run this command.)
+- /pj id (Change your car's paintjob)
 
 # How to install
 Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode
