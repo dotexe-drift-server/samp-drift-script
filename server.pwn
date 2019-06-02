@@ -198,12 +198,15 @@ CMD:car(PLAYER_ID, PARAMS[])
 	GetPlayerPos(PLAYER_ID, Float:X, Float:Y, Float:Z);
 	if(sscanf(PARAMS, "s[128]", CAR_NAME)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /car <name>");
 	else if(RETURN_VEHICLE_ID(CAR_NAME) < 400 || RETURN_VEHICLE_ID(CAR_NAME) > 611 || RETURN_VEHICLE_ID(CAR_NAME) == 0) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Vehicle does not exist!");
-	if(VEHICLE[PLAYER_ID] != 0) DestroyVehicle(VEHICLE[PLAYER_ID]);
-  	VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
-	SetVehicleVirtualWorld(VEHICLE[PLAYER_ID], GetPlayerVirtualWorld(PLAYER_ID));
-  	PutPlayerInVehicle(PLAYER_ID, VEHICLE[PLAYER_ID], 0);
- 	format(STRING,sizeof(STRING), PREFIX "Your %s has been spawned.",CAR_NAME);
- 	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
+	else
+	{
+		if(VEHICLE[PLAYER_ID] != 0) DestroyVehicle(VEHICLE[PLAYER_ID]);
+	  	VEHICLE[PLAYER_ID] = CreateVehicle(RETURN_VEHICLE_ID(CAR_NAME), X, Y, Z + 3.0, 0, -1, -1, 1);
+		SetVehicleVirtualWorld(VEHICLE[PLAYER_ID], GetPlayerVirtualWorld(PLAYER_ID));
+	  	PutPlayerInVehicle(PLAYER_ID, VEHICLE[PLAYER_ID], 0);
+	 	format(STRING,sizeof(STRING), PREFIX "Your %s has been spawned.",CAR_NAME);
+	 	SendClientMessage(PLAYER_ID, 0xffffffff, STRING);
+	}
  	return 1;
 }
 
@@ -217,6 +220,18 @@ CMD:cc(PLAYER_ID, PARAMS[])
     else if(COLOR_ID < 0 || COLOR_ID > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
     else if(COLOR_ID2 < 0 || COLOR_ID2 > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
     else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed.");
+    return 1;
+}
+
+CMD:pj(PLAYER_ID, PARAMS[])
+{
+	new PJ, VEHICLE_ID;
+  	VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    else if(sscanf(PARAMS, "d", PJ)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /pj <id>");
+    else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    else if(PJ < 0 || PJ > 3) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Paintjob cannot be above 3 or below 0!");
+    else ChangeVehiclePaintjob(VEHICLE_ID, PJ); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Paintjob color changed.");
     return 1;
 }
 
