@@ -82,6 +82,8 @@ public OnPlayerRequestClass(playerid, classid)
 	return 1;
 }
 
+native gpci (playerid, serial [], len);
+
 public OnPlayerConnect(playerid)
 {
 	CARGOD[playerid] = true;
@@ -145,8 +147,8 @@ CMD:cmds(PLAYER_ID, PARAMS[])
 	strcat(TEXT, "/ls - Los Santos\n/lsap - Los Santos Airport\n/lv - Las Venturas\n/lvap - Las Venturas Airport\n/sf - San Fierro\n/sfap - San Fierro Airport\n");
 	strcat(TEXT, "/car <name> - Spawn a car\n/cc <id1> <id2> - Change car color\n/flip - Flip your car upright\n/s - Save a custom teleport position\n/r - Load your saved teleport position\n");
 	strcat(TEXT, "/t <time> - Change your local player's time\n/w <weather> - Change your local player's weather\n");
-	strcat(TEXT, "/goto <id> - Teleport to a player\n/vw <id> - Change virtual worlds\n/text - Toggle the watermark in the bottom left\n/skin <id> - Change your player's skin\n");
-	ShowPlayerDialog(PLAYER_ID, DIALOG_CMDS, DIALOG_STYLE_MSGBOX, "Commands", TEXT, "Ok");
+	strcat(TEXT, "/goto <id> - Teleport to a player\n/vw <id> - Change virtual worlds\n/text - Toggle the watermark in the bottom left\n/skin <id> - Change your player's skin\n/pj <id> - Change your car's paintjob\n");
+	ShowPlayerDialog(PLAYER_ID, DIALOG_CMDS, DIALOG_STYLE_MSGBOX, "Commands", TEXT, "Ok", "");
 	return 1;
 }
 
@@ -154,8 +156,9 @@ CMD:skin(PLAYER_ID, PARAMS[])
 {
 	new SKIN;
     if(sscanf(PARAMS, "d", SKIN)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
-    else if(SKIN < 0 || SKIN > 299) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 299 or below 0!");
-    else SetPlayerSkin(PLAYER_ID, SKIN); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed.");
+    else if(SKIN < 0 || SKIN > 311) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Skin cannot be above 311 or below 0!");
+    else { SetPlayerSkin(PLAYER_ID, SKIN); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed."); }
+    return 1;
 }
 
 CMD:vw(PLAYER_ID, PARAMS[])
@@ -163,7 +166,8 @@ CMD:vw(PLAYER_ID, PARAMS[])
 	new WORLD;
     if(sscanf(PARAMS, "d", WORLD)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
     else if(WORLD < 0 || WORLD > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
-    else SetPlayerVirtualWorld(PLAYER_ID, WORLD); return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed.");
+    else { SetPlayerVirtualWorld(PLAYER_ID, WORLD); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed."); }
+    return 1;
 }
 
 CMD:cargod(PLAYER_ID, PARAMS[])
@@ -219,7 +223,7 @@ CMD:cc(PLAYER_ID, PARAMS[])
     else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
     else if(COLOR_ID < 0 || COLOR_ID > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
     else if(COLOR_ID2 < 0 || COLOR_ID2 > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
-    else ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed.");
+    else { ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed."); }
     return 1;
 }
 
@@ -231,7 +235,7 @@ CMD:pj(PLAYER_ID, PARAMS[])
     else if(sscanf(PARAMS, "d", PJ)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /pj <id>");
     else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
     else if(PJ < 0 || PJ > 3) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Paintjob cannot be above 3 or below 0!");
-    else ChangeVehiclePaintjob(VEHICLE_ID, PJ); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Paintjob color changed.");
+    else { ChangeVehiclePaintjob(VEHICLE_ID, PJ); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Paintjob color changed."); }
     return 1;
 }
 
@@ -255,7 +259,7 @@ CMD:t(PLAYER_ID, PARAMS[])
 	new TIME;
 	if(sscanf(PARAMS, "d", TIME)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /t <time>");
 	else if(TIME < 0 || TIME > 23) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Time can not be above 23 or below 0!");
-	else SetPlayerTime(PLAYER_ID, TIME, 0); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!");
+	else { SetPlayerTime(PLAYER_ID, TIME, 0); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Time has been changed!"); }
 	return 1;
 }
 
@@ -264,7 +268,7 @@ CMD:w(PLAYER_ID, PARAMS[])
 	new WEATHER;
 	if(sscanf(PARAMS, "d", WEATHER)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid: /w <weather>");
 	else if(WEATHER < 0 || WEATHER > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Weather can not be above 255 or below 0!");
-	else SetPlayerWeather(PLAYER_ID, WEATHER); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Weather has been changed!");
+	else { SetPlayerWeather(PLAYER_ID, WEATHER); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Weather has been changed!"); }
 	return 1;
 }
 
