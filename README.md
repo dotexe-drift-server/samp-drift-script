@@ -36,6 +36,10 @@ Mode:     dotexe drift script
 - /skin id (Change your player's skin)
 - /pj id (Change your car's paintjob)
 
+# Repo files
+- server.pwn - Raw source code
+- server.amx - Compiled script, ready to be used on a server
+
 # How to install
 Put server.pwn and server.amx into <your server>/gamemodes and edit your server.cfg to point to the gamemode
   
