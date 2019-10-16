@@ -5,7 +5,7 @@ A SA-MP server gamemode designed for drifting
 The script is running on my drift server.
 
 ```
-HostName: [0.3.7] dotexe's drift server
+HostName: dotexe's drift server
 Address:  dotexe.64-b.it:1337
 Mode:     dotexe drift script
 ```
