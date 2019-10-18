@@ -22,7 +22,6 @@
 #define DIALOG_SUCCESS_1 3
 #define DIALOG_SUCCESS_2 4
 #define DIALOG_CMDS 5
-#define PATH "/Users/%s.ini"
 #define PREFIX "" COLOR_GREY "[SERVER]: " COLOR_WHITE
 #define PREFIX_ERROR "" COLOR_GREY "[SERVER]: " COLOR_RED
 
