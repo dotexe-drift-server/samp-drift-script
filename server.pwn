@@ -1,27 +1,23 @@
 #include <a_samp>
-#include <izcmd>
-#include <sscanf2>
+#include <a_players>
+#include <a_vehicles>
+#include <a_objects>
+#include <a_sampdb>
 #include <core>
 #include <float>
 #include <string>
 #include <file>
 #include <time>
 #include <datagram>
-#include <a_players>
-#include <a_vehicles>
-#include <a_objects>
-#include <a_sampdb>
+#include <izcmd>
+#include <sscanf2>
 
 #define COLOR_WHITE "{ffffff}"
 #define COLOR_GREY "{a3a3a3}"
 #define COLOR_RED "{f81414}"
 #define COLOR_GREEN "{00ff22}"
 #define COLOR_LIGHTBLUE "{00ced1}"
-#define DIALOG_REGISTER 1
-#define DIALOG_LOGIN 2
-#define DIALOG_SUCCESS_1 3
-#define DIALOG_SUCCESS_2 4
-#define DIALOG_CMDS 5
+#define DIALOG_CMDS 1
 #define PREFIX "" COLOR_GREY "[SERVER]: " COLOR_WHITE
 #define PREFIX_ERROR "" COLOR_GREY "[SERVER]: " COLOR_RED
 
@@ -68,8 +64,8 @@ public OnGameModeInit()
 	WATERMARK = TextDrawCreate(5, 430, "--");
 	TextDrawFont(WATERMARK,3);
  	TextDrawLetterSize(WATERMARK,0.399999,1.600000);
-    TextDrawColor(WATERMARK,0xffffffff);
-    TextDrawSetString(WATERMARK, "dotexe drift script");
+    	TextDrawColor(WATERMARK,0xffffffff);
+    	TextDrawSetString(WATERMARK, "dotexe drift script");
 	return 1;
 }
 
@@ -92,9 +88,9 @@ public OnPlayerConnect(playerid)
 	{
 	    new name[MAX_PLAYER_NAME + 1];
 	    GetPlayerName(playerid, name, sizeof(name));
-     	new string[128];
-     	format(string, sizeof(string), COLOR_GREY "[SERVER]: " COLOR_WHITE "Player %s(%d) has joined the server", name, playerid);
-	    SendClientMessage(i, 0xffffffff, string);
+     		new string[128];
+     		format(string, sizeof(string), COLOR_GREY "[SERVER]: " COLOR_WHITE "Player %s(%d) has joined the server", name, playerid);
+	    	SendClientMessage(i, 0xffffffff, string);
 	}
 	if(TEXT_SHOWN[playerid]) TextDrawShowForPlayer(playerid, WATERMARK);
 	return 1;
@@ -104,11 +100,11 @@ public OnPlayerDisconnect(playerid, reason)
 {
 	for(new i; i < MAX_PLAYERS; i++)
 	{
-	    new name[MAX_PLAYER_NAME + 1];
-	    GetPlayerName(playerid, name, sizeof(name));
+	    	new name[MAX_PLAYER_NAME + 1];
+	    	GetPlayerName(playerid, name, sizeof(name));
  		new string[128];
  		format(string, sizeof(string), PREFIX "Player %s(%d) has left the server", name, playerid);
-	    SendClientMessage(i, 0xffffffff, string);
+	    	SendClientMessage(i, 0xffffffff, string);
 	}
 	TextDrawHideForPlayer(playerid, WATERMARK);
 	return 1;
@@ -116,27 +112,27 @@ public OnPlayerDisconnect(playerid, reason)
 
 public OnPlayerUpdate(playerid)
 {
-    if(GOD[playerid]) SetPlayerHealth(playerid, Float:0x7F800000);
-	if(IsPlayerInAnyVehicle(playerid) && CARGOD[playerid]) RepairVehicle(GetPlayerVehicleID(playerid));
-	new VEH;
-	VEH = GetPlayerVehicleID(playerid);
-	if(VEH > 0) AddVehicleComponent(VEH, 1010);
-	return 1;
-}
-
-public OnPlayerCommandPerformed(playerid, cmdtext[], success)
-{
-	if (!success)
-    {
-		SendClientMessage(playerid, 0xffffffff, PREFIX_ERROR "Invalid command! Try /cmds for help");
-    }
-    return 1;
+    	if(GOD[playerid]) SetPlayerHealth(playerid, Float:0x7F800000);
+		if(IsPlayerInAnyVehicle(playerid) && CARGOD[playerid]) RepairVehicle(GetPlayerVehicleID(playerid));
+		new VEH;
+		VEH = GetPlayerVehicleID(playerid);
+		if(VEH > 0) AddVehicleComponent(VEH, 1010);
+		return 1;
+	}
+	
+	public OnPlayerCommandPerformed(playerid, cmdtext[], success)
+	{
+		if (!success)
+    	{
+			SendClientMessage(playerid, 0xffffffff, PREFIX_ERROR "Invalid command! Try /cmds for help");
+    	}
+    	return 1;
 }
 
 RETURN_VEHICLE_ID(VEHICLE_NAME[])
 {
-    for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
-    return INVALID_VEHICLE_ID;
+    	for(new i; i != 211; i++) if(strfind(VEHICLE_NAMES[i], VEHICLE_NAME, true) != -1) return i + 400;
+    	return INVALID_VEHICLE_ID;
 }
 
 CMD:cmds(PLAYER_ID, PARAMS[])
@@ -153,26 +149,26 @@ CMD:cmds(PLAYER_ID, PARAMS[])
 
 CMD:skin(PLAYER_ID, PARAMS[])
 {
-	new SKIN;
-    if(sscanf(PARAMS, "d", SKIN)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
-    else if(SKIN < 0 || SKIN > 311) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Skin cannot be above 311 or below 0!");
-    else { SetPlayerSkin(PLAYER_ID, SKIN); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed."); }
-    return 1;
+    	new SKIN;
+    	if(sscanf(PARAMS, "d", SKIN)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /skin <id>");
+    	else if(SKIN < 0 || SKIN > 311) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Skin cannot be above 311 or below 0!");
+    	else { SetPlayerSkin(PLAYER_ID, SKIN); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your skin has been changed."); }
+    	return 1;
 }
 
 CMD:vw(PLAYER_ID, PARAMS[])
 {
-	new WORLD;
-    if(sscanf(PARAMS, "d", WORLD)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
-    else if(WORLD < 0 || WORLD > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
-    else { SetPlayerVirtualWorld(PLAYER_ID, WORLD); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed."); }
-    return 1;
+   	 new WORLD;
+   	 if(sscanf(PARAMS, "d", WORLD)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /vw <id>");
+   	 else if(WORLD < 0 || WORLD > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Virtual world cannot be above 255 or below 0!");
+   	 else { SetPlayerVirtualWorld(PLAYER_ID, WORLD); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Your virtual world has been changed."); }
+    	return 1;
 }
 
 CMD:cargod(PLAYER_ID, PARAMS[])
 {
-	CARGOD[PLAYER_ID] = !CARGOD[PLAYER_ID];
-    return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car god mode has been toggled! Run this command again to toggle it back on/off.");
+    	CARGOD[PLAYER_ID] = !CARGOD[PLAYER_ID];
+    	return SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car god mode has been toggled! Run this command again to toggle it back on/off.");
 }
 
 CMD:god(PLAYER_ID, PARAMS[])
@@ -180,19 +176,19 @@ CMD:god(PLAYER_ID, PARAMS[])
 	GOD[PLAYER_ID] = !GOD[PLAYER_ID];
 	if(!GOD[PLAYER_ID])
 	{
-	    SetPlayerHealth(PLAYER_ID, 100);
+	    	SetPlayerHealth(PLAYER_ID, 100);
 	}
- 	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "God mode! Run this command again to toggle it back on/off.");
- 	return 1;
+	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "God mode! Run this command again to toggle it back on/off.");
+	return 1;
 }
 
 CMD:text(PLAYER_ID, PARAMS[])
 {
 	TEXT_SHOWN[PLAYER_ID] = !TEXT_SHOWN[PLAYER_ID];
  	if(TEXT_SHOWN[PLAYER_ID]) TextDrawShowForPlayer(PLAYER_ID, WATERMARK);
-    else TextDrawHideForPlayer(PLAYER_ID, WATERMARK);
-    SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Text has been toggled! Run this command again to toggle it back on/off.");
-    return 1;
+    	else TextDrawHideForPlayer(PLAYER_ID, WATERMARK);
+    	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Text has been toggled! Run this command again to toggle it back on/off.");
+	return 1;
 }
 
 CMD:car(PLAYER_ID, PARAMS[])
@@ -217,25 +213,25 @@ CMD:cc(PLAYER_ID, PARAMS[])
 {
 	new COLOR_ID, COLOR_ID2, VEHICLE_ID, STR[128];
   	VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(sscanf(PARAMS, "dd", COLOR_ID,COLOR_ID2)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /cc <color1> <color2>");
-    else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(COLOR_ID < 0 || COLOR_ID > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
-    else if(COLOR_ID2 < 0 || COLOR_ID2 > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
-    else { ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed."); }
-    return 1;
+ 	if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    	else if(sscanf(PARAMS, "dd", COLOR_ID,COLOR_ID2)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /cc <color1> <color2>");
+    	else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    	else if(COLOR_ID < 0 || COLOR_ID > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
+    	else if(COLOR_ID2 < 0 || COLOR_ID2 > 255) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Color cannot be above 255 or below 0!");
+    	else { ChangeVehicleColor(VEHICLE_ID, COLOR_ID, COLOR_ID2); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Car color changed."); }
+    	return 1;
 }
 
 CMD:pj(PLAYER_ID, PARAMS[])
 {
 	new PJ, VEHICLE_ID;
   	VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-    if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(sscanf(PARAMS, "d", PJ)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /pj <id>");
-    else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
-    else if(PJ < 0 || PJ > 3) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Paintjob cannot be above 3 or below 0!");
-    else { ChangeVehiclePaintjob(VEHICLE_ID, PJ); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Paintjob color changed."); }
-    return 1;
+    	if(!(IsPlayerInAnyVehicle(PLAYER_ID))) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    	else if(sscanf(PARAMS, "d", PJ)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Invalid arguments! Valid; /pj <id>");
+    	else if(!IsPlayerInAnyVehicle(PLAYER_ID)) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "You are not in a vehicle!");
+    	else if(PJ < 0 || PJ > 3) SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX_ERROR  "Paintjob cannot be above 3 or below 0!");
+    	else { ChangeVehiclePaintjob(VEHICLE_ID, PJ); SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Paintjob color changed."); }
+    	return 1;
 }
 
 CMD:flip(PLAYER_ID, PARAMS[])
@@ -275,9 +271,9 @@ CMD:s(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
 		GetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[PLAYER_ID]);
-    	GetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
+    		GetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 	}
 	else
 	{
@@ -285,19 +281,19 @@ CMD:s(PLAYER_ID, PARAMS[])
 		GetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 	}
 	GetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-    SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Saved teleport position.");
-    return 1;
+    	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "Saved teleport position.");
+    	return 1;
 }
 
 CMD:r(PLAYER_ID, PARAMS[])
 {
-    if ( PosX[ PLAYER_ID ] != 0 && PosY[ PLAYER_ID ] != 0 && PosZ[ PLAYER_ID ] != 0 )
-   	{
+    	if ( PosX[ PLAYER_ID ] != 0 && PosY[ PLAYER_ID ] != 0 && PosZ[ PLAYER_ID ] != 0 )
+	{
 		if(IsPlayerInAnyVehicle(PLAYER_ID))
 		{
-		    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-		    SetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[ PLAYER_ID ]);
-		    SetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
+		    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+		    	SetVehiclePos(VEHICLE_ID, PosX[PLAYER_ID], PosY[PLAYER_ID], PosZ[ PLAYER_ID ]);
+		    	SetVehicleZAngle(VEHICLE_ID, Angle[PLAYER_ID]);
 		}
 		else
 		{
@@ -305,9 +301,9 @@ CMD:r(PLAYER_ID, PARAMS[])
 			SetPlayerFacingAngle(PLAYER_ID, Angle[PLAYER_ID]);
 		}
 		SetPlayerInterior(PLAYER_ID, Interior[PLAYER_ID]);
-        SendClientMessage( PLAYER_ID, 0xffffffff, PREFIX "Teleported to saved position." );
-	 }
-	 return 1;
+        	SendClientMessage( PLAYER_ID, 0xffffffff, PREFIX "Teleported to saved position." );
+	}
+	return 1;
 }
 
 CMD:goto(PLAYER_ID, PARAMS[])
@@ -320,7 +316,7 @@ CMD:goto(PLAYER_ID, PARAMS[])
 		if(IsPlayerInAnyVehicle(PLAYER_ID))
 		{
 			new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-        	GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
+        		GetPlayerPos(ID, POS_X, POS_Y, POS_Z);
  			SetVehiclePos(VEHICLE_ID, POS_X, POS_Y, POS_Z);
 		 	SetPlayerVirtualWorld(PLAYER_ID, GetPlayerVirtualWorld(ID));
  			SetVehicleVirtualWorld(VEHICLE_ID, GetPlayerVirtualWorld(ID));
@@ -340,8 +336,8 @@ CMD:ls(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, 2499.8733,-1667.6309,13.3512);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, 2499.8733,-1667.6309,13.3512);
    		SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else {
@@ -357,9 +353,9 @@ CMD:lsap(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, 1934.8811,-2305.5283,13.5469);
-	    SetVehicleZAngle(VEHICLE_ID, 180);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, 1934.8811,-2305.5283,13.5469);
+	    	SetVehicleZAngle(VEHICLE_ID, 180);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
@@ -374,13 +370,13 @@ CMD:sf(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, -2670.1101,-4.9832,6.1328);
-	    SetVehicleZAngle(VEHICLE_ID, 90);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, -2670.1101,-4.9832,6.1328);
+	    	SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else
 	{
-	    SetPlayerInterior(PLAYER_ID, 0);
+	    	SetPlayerInterior(PLAYER_ID, 0);
 		SetPlayerPos(PLAYER_ID, -2670.1101,-4.9832,6.1328);
 		SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
@@ -392,9 +388,9 @@ CMD:sfap(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, -1315.9419,-223.8595,14.1484);
-	    SetVehicleZAngle(VEHICLE_ID, 90);
+		new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, -1315.9419,-223.8595,14.1484);
+	    	SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else {
 		SetPlayerInterior(PLAYER_ID, 0);
@@ -409,8 +405,8 @@ CMD:lv(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, 2421.7185,1121.9866,10.8125);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, 2421.7185,1121.9866,10.8125);
 		SetVehicleZAngle(VEHICLE_ID, 0);
 	}
 	else {
@@ -426,15 +422,15 @@ CMD:lvap(PLAYER_ID, PARAMS[])
 {
 	if(IsPlayerInAnyVehicle(PLAYER_ID))
 	{
-	    new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
-	    SetVehiclePos(VEHICLE_ID, 1487.9703,1736.9537,10.8125);
-	    SetVehicleZAngle(VEHICLE_ID, 90);
+	    	new VEHICLE_ID = GetPlayerVehicleID(PLAYER_ID);
+	    	SetVehiclePos(VEHICLE_ID, 1487.9703,1736.9537,10.8125);
+	    	SetVehicleZAngle(VEHICLE_ID, 90);
 	}
 	else
 	{
  		SetPlayerInterior(PLAYER_ID, 0);
-        SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
-        SetPlayerFacingAngle(PLAYER_ID, 90);
+        	SetPlayerPos(PLAYER_ID, 1487.9703,1736.9537,10.8125);
+        	SetPlayerFacingAngle(PLAYER_ID, 90);
 	}
  	SendClientMessage(PLAYER_ID, 0xffffffff, PREFIX "You've been teleported to Las Venturas Airport.");
  	return 1;
