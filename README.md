@@ -3,15 +3,6 @@ A SA-MP server gamemode designed for drifting
 
 This script is licensed under the GNU Lesser General Public License (LGPL) v3. For more information, please read LICENSE.md
 
-# Where can I test the script?
-The script is running on my drift server.
-
-```
-HostName: [0.3.7] dotexe's drift server
-Address:  games.dotexe.cf:1337
-Mode:     dotexe drift script
-```
-
 # Current features
 - Chat notifications when a player leaves or joins the server
 - Infinite nitrous
