@@ -10,6 +10,7 @@
 #include <time>
 #include <datagram>
 #include <izcmd>
+#define SSCANF_NO_NICE_FEATURES
 #include <sscanf2>
 
 #define COLOR_WHITE "{ffffff}"
